@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Wellness Village</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="ds/styles.css">
+<script src="ds/ds_bundle.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Lora:ital,wght@0,400;0,500;1,400&family=Pixelify+Sans:wght@400;500;600&display=swap">
+<style>
+  body { margin: 0; background: #3c4152; --font-heading: 'Pixelify Sans', ui-monospace, monospace; font-variant-ligatures: none; }
+  button, input { font-variant-ligatures: none; }
+  a { color: var(--color-accent-700); text-decoration-thickness: 1px; }
+  a:hover { color: var(--color-accent-800); }
+  @keyframes lpaFloat { 0% { transform: translateY(0) scale(0.6); opacity: 0; } 15% { opacity: 1; transform: translateY(-20px) scale(1); } 100% { transform: translateY(-170px) scale(1.1); opacity: 0; } }
+</style>
+</helmet>
+
+<div style="min-height:100vh;background:#3c4152;color:#ece4d6;font-family:var(--font-body);padding:0 24px 64px">
+  <div style="max-width:1500px;margin:0 auto">
+
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;padding:22px 0 14px;border-bottom:1px solid rgba(236,228,214,0.18)">
+      <div style="display:flex;align-items:baseline;gap:16px;flex-wrap:wrap">
+        <h1 style="margin:0;font-family:var(--font-heading);font-weight:500;font-size:32px;line-height:1">Wellness Village</h1>
+        <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-300)">A virtual townhall for junior lawyers · SAL with the YLC · concept v0.4</div>
+      </div>
+      <div style="font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(236,228,214,0.6)">No login · no name · nothing leaves this device</div>
+    </div>
+
+    <div style="display:flex;flex-wrap:wrap;gap:20px;padding-top:20px;align-items:flex-start">
+      <div style="flex:999 1 720px;min-width:0">
+        <div style="position:relative;color:var(--color-text);aspect-ratio:3/2;min-height:420px;border:8px solid var(--color-surface);outline:1px solid rgba(236,228,214,0.25);box-shadow:var(--shadow-sm);background:#1a1c28;overflow:hidden">
+          <canvas ref="{{canvasRef}}" width="1152" height="768" onClick="{{canvasClick}}" style="display:block;width:100%;height:100%;object-fit:cover;image-rendering:pixelated;cursor:pointer"></canvas>
+
+          <div style="position:absolute;left:10px;top:10px;max-width:calc(100% - 170px);box-sizing:border-box;display:flex;flex-direction:column;gap:3px;background:var(--color-surface);border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:6px 10px;box-shadow:var(--shadow-sm)">
+            <div style="display:flex;align-items:baseline;flex-wrap:wrap;gap:2px 10px"><span style="font-family:var(--font-heading);font-size:19px;line-height:1">Village Square</span><span style="font-size:12px;font-feature-settings:'tnum' 1;color:var(--color-neutral-700)">Tue · 8.30pm</span></div>
+            <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#a83a30;white-space:nowrap">● Main Hall is live</div>
+          </div>
+
+          <div style="position:absolute;right:10px;top:10px;display:flex;align-items:baseline;gap:8px;background:var(--color-surface);border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:6px 12px;box-shadow:var(--shadow-sm)">
+            <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--color-neutral-700)">Lanterns</span>
+            <span style="font-family:var(--font-heading);font-size:22px;line-height:1;font-feature-settings:'tnum' 1;color:var(--color-accent-700)">{{litCount}}<span style="color:var(--color-neutral-600)">/12</span></span>
+          </div>
+
+          <div style="position:absolute;left:10px;bottom:10px;max-width:calc(100% - 180px);box-sizing:border-box;font-size:12px;line-height:1.4;background:var(--color-surface);border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:6px 10px;color:{{promptInk}}">{{prompt}}</div>
+
+          <button type="button" onClick="{{openSheet}}" style="position:absolute;right:10px;bottom:10px;min-height:36px;padding:0 14px;background:#2c3040;color:#ece4d6;border:2px solid var(--color-neutral-900);border-radius:18px;cursor:pointer;font-family:var(--font-body);font-size:13px;box-shadow:var(--shadow-sm)" style-hover="background:#3c4152">Need help now?</button>
+
+          <sc-if value="{{dlgOn}}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;left:50%;bottom:56px;transform:translateX(-50%);width:min(520px,86%);background:var(--color-surface);border:3px solid var(--color-neutral-900);border-radius:var(--radius-md);padding:14px 18px;box-shadow:var(--shadow-lg);display:flex;gap:14px;align-items:flex-start">
+              <div role="img" aria-label="Character" style="width:48px;height:72px;image-rendering:pixelated;flex:none;background-image:url({{dlg.img}});background-size:100% 100%;background-repeat:no-repeat"></div>
+              <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+                <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">{{dlg.role}}</div>
+                <div style="font-size:15px;line-height:1.5;text-wrap:pretty">“{{dlg.line}}”</div>
+                <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:4px">
+                  <button type="button" class="btn btn-ghost" onClick="{{closeDlg}}" style="font-size:13px;padding:5px 10px">Bye</button>
+                  <button type="button" class="btn btn-primary" onClick="{{dlgGo}}" style="font-size:13px;padding:5px 12px;display:{{dlgGoOn}}">{{dlg.goLabel}}</button>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{roomOn}}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(20,22,32,0.62);z-index:10">
+              <div style="width:min(820px,94%);max-height:92%;display:flex;flex-direction:column;background:var(--color-surface);border:3px solid var(--color-neutral-900);border-radius:var(--radius-md);box-shadow:var(--shadow-lg)">
+                <div style="flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px;border-bottom:1px solid var(--color-divider)">
+                  <div>
+                    <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">{{roomKicker}}</div>
+                    <div style="font-family:var(--font-heading);font-size:24px;line-height:1.05">{{roomTitle}}</div>
+                  </div>
+                  <sc-if value="{{leaveOn}}" hint-placeholder-val="{{ true }}">
+                    <button type="button" class="btn btn-secondary" onClick="{{closeRoom}}" style="font-size:13px;padding:6px 14px">Leave · Esc</button>
+                  </sc-if>
+                </div>
+                <div style="flex:1;min-height:0;overflow-y:auto;padding:16px 18px 20px">
+
+                  <sc-if value="{{rmLive}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;align-items:start">
+                      <div style="display:flex;flex-direction:column;gap:12px">
+                        <div style="position:relative;aspect-ratio:16/9;background:#1a1c28;border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);overflow:hidden;color:#ece4d6;display:flex;flex-direction:column;justify-content:space-between;padding:10px 12px">
+                          <div style="display:flex;justify-content:space-between;align-items:center">
+                            <span style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;background:#c84040;padding:2px 7px;border-radius:3px">Live</span>
+                            <span style="font-size:11px;font-feature-settings:'tnum' 1;color:rgba(236,228,214,0.7)">{{watching}} watching</span>
+                          </div>
+                          <div style="text-align:center;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:rgba(236,228,214,0.45)">YouTube Live / Zoom webinar embed</div>
+                          <div>
+                            <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-300)">Now sharing</div>
+                            <div style="font-family:var(--font-heading);font-size:15px">Partner, commercial disputes · 21 years’ call (sample)</div>
+                          </div>
+                          {{floatLayer}}
+                        </div>
+                        <div style="display:flex;gap:8px">
+                          <sc-for list="{{emojis}}" as="e" hint-placeholder-count="4">
+                            <button type="button" onClick="{{e.go}}" style="flex:1;height:40px;font-size:19px;background:transparent;border:1px solid var(--color-divider);border-radius:var(--radius-sm);cursor:pointer" style-hover="background:var(--color-accent-100)">{{e.e}}</button>
+                          </sc-for>
+                        </div>
+                        <button type="button" onClick="{{toggleMeToo}}" style="display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:8px 16px;background:{{meTooBg}};color:{{meTooInk}};border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-body)">
+                          <span style="font-family:var(--font-heading);font-size:20px">{{meTooLabel}}</span>
+                          <span style="font-size:13px;font-feature-settings:'tnum' 1">{{meTooCount}} people felt this</span>
+                        </button>
+                        <div style="font-size:11px;color:var(--color-neutral-700);margin-top:-6px">Only the total is shown. Tapping discloses nothing about you.</div>
+                        <div style="border-top:1px solid var(--color-divider);padding-top:10px">
+                          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">Live poll</div>
+                          <div style="font-family:var(--font-heading);font-size:17px;margin:4px 0 8px">What makes it hardest to ask for help?</div>
+                          <div style="display:flex;flex-direction:column;gap:6px">
+                            <sc-for list="{{poll}}" as="o" hint-placeholder-count="4">
+                              <button type="button" onClick="{{o.go}}" style="position:relative;overflow:hidden;display:flex;justify-content:space-between;align-items:center;min-height:36px;padding:0 12px;border:1px solid {{o.br}};border-radius:var(--radius-sm);background:transparent;cursor:pointer;font-family:var(--font-body);font-size:14px;color:var(--color-text);text-align:left">
+                                <span style="position:absolute;left:0;top:0;bottom:0;width:{{o.w}};background:var(--color-accent-100)"></span>
+                                <span style="position:relative">{{o.t}}</span>
+                                <span style="position:relative;font-size:12px;font-feature-settings:'tnum' 1;color:var(--color-neutral-700)">{{o.pct}}</span>
+                              </button>
+                            </sc-for>
+                          </div>
+                        </div>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:12px">
+                        <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">Anonymous Q&amp;A</div>
+                        <div style="display:flex;gap:8px">
+                          <input class="input" value="{{qDraft}}" onChange="{{setQDraft}}" onKeyDown="{{qKey}}" placeholder="Ask the panel…" style="flex:1;min-width:0;height:40px;box-sizing:border-box">
+                          <button type="button" class="btn btn-primary" onClick="{{sendQ}}" style="height:40px">Send</button>
+                        </div>
+                        <sc-if value="{{modOn}}" hint-placeholder-val="{{ false }}">
+                          <div style="font-size:12px;line-height:1.4;border:1px solid var(--color-accent-300);border-radius:var(--radius-sm);padding:7px 10px;color:var(--color-accent-800);text-wrap:pretty">{{modMsg}}</div>
+                        </sc-if>
+                        <div style="font-size:11px;color:var(--color-neutral-700);text-wrap:pretty">Every question goes to YLC moderators first. Firm names, people’s names and case numbers are flagged for removal.</div>
+                        <div style="display:flex;flex-direction:column">
+                          <sc-for list="{{questions}}" as="q" hint-placeholder-count="3">
+                            <div style="display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--color-divider)">
+                              <button type="button" onClick="{{q.vote}}" style="flex:none;width:42px;min-height:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid {{q.br}};border-radius:var(--radius-sm);background:transparent;cursor:pointer;font-family:var(--font-body);color:var(--color-text)">
+                                <span style="font-size:10px">▲</span><span style="font-size:13px;font-feature-settings:'tnum' 1">{{q.v}}</span>
+                              </button>
+                              <div style="flex:1;min-width:0">
+                                <div style="font-size:14px;line-height:1.4;text-wrap:pretty">{{q.t}}</div>
+                                <div style="font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:{{q.stInk}};margin-top:3px">{{q.st}}</div>
+                              </div>
+                            </div>
+                          </sc-for>
+                        </div>
+                        <div style="border:1px solid var(--color-divider);border-radius:var(--radius-sm);padding:12px 14px;display:flex;flex-direction:column;gap:8px">
+                          <div style="font-family:var(--font-heading);font-size:16px">After the session: All the Small Chats</div>
+                          <div style="font-size:13px;line-height:1.45;text-wrap:pretty">A breakout room for juniors at firms of 1–5 lawyers. The replay stays up with a timestamped Q&amp;A.</div>
+                          <button type="button" class="btn btn-secondary" onClick="{{toggleBreakout}}" style="align-self:flex-start;font-size:13px">{{breakoutLabel}}</button>
+                        </div>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmLibList}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:14px">
+                      <p style="margin:0;font-size:14px;line-height:1.5;max-width:60ch;text-wrap:pretty">Seniors who agreed to take part share what happened and where they are now. Finish a story to add its stamp to your passport.</p>
+                      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px">
+                        <sc-for list="{{storyCards}}" as="s" hint-placeholder-count="3">
+                          <button type="button" onClick="{{s.open}}" style="display:flex;flex-direction:column;gap:8px;text-align:left;background:transparent;border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:12px;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="background:var(--color-accent-100)">
+                            <div style="display:flex;gap:10px;align-items:center">
+                              <div role="img" aria-label="Character" style="width:32px;height:48px;image-rendering:pixelated;flex:none;background-image:url({{s.img}});background-size:100% 100%;background-repeat:no-repeat"></div>
+                              <div style="flex:1;min-width:0">
+                                <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700)">{{s.mode}}</div>
+                                <div style="font-size:11px;color:var(--color-neutral-700)">{{s.status}}</div>
+                              </div>
+                            </div>
+                            <div style="font-family:var(--font-heading);font-size:19px;line-height:1.1">{{s.title}}</div>
+                            <div style="font-size:12px;color:var(--color-neutral-700)">{{s.who}} · {{s.years}}</div>
+                            <div style="display:flex;flex-wrap:wrap;gap:6px">
+                              <sc-for list="{{s.tags}}" as="t" hint-placeholder-count="2">
+                                <span class="tag tag-outline" style="font-size:11px">{{t}}</span>
+                              </sc-for>
+                            </div>
+                          </button>
+                        </sc-for>
+                      </div>
+                      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--color-neutral-700);border-top:1px solid var(--color-divider);padding-top:10px">
+                        <span>Sample stories. Final cards come from consented interviews (Prof Tan Seow Hon’s living case study).</span><span>{{badgeLine}}</span>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmLibRead}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:12px;max-width:600px;margin:0 auto">
+                      <button type="button" class="btn btn-ghost" onClick="{{backToList}}" style="align-self:flex-start;padding:2px 0;font-size:13px">‹ All stories</button>
+                      <div style="display:flex;gap:14px;align-items:flex-end">
+                        <div role="img" aria-label="Character" style="width:48px;height:72px;image-rendering:pixelated;flex:none;background-image:url({{st.img}});background-size:100% 100%;background-repeat:no-repeat"></div>
+                        <div>
+                          <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-neutral-700)">{{st.who}} · {{st.years}}</div>
+                          <div style="font-family:var(--font-heading);font-size:28px;line-height:1.05">{{st.title}}</div>
+                        </div>
+                      </div>
+                      <div style="display:flex;align-items:center;gap:10px;border:1px solid var(--color-divider);border-radius:var(--radius-sm);padding:8px 10px">
+                        <button type="button" onClick="{{togglePlay}}" style="width:36px;height:36px;flex:none;border:1px solid var(--color-accent);border-radius:50%;background:transparent;cursor:pointer;color:var(--color-accent-700);font-size:13px">{{playIcon}}</button>
+                        <div style="flex:1;height:4px;background:var(--color-neutral-200);border-radius:2px;overflow:hidden"><div style="height:100%;width:{{playPct}};background:var(--color-accent)"></div></div>
+                        <span style="font-size:11px;font-feature-settings:'tnum' 1;color:var(--color-neutral-700)">{{st.mode}}</span>
+                      </div>
+                      <sc-for list="{{st.body}}" as="para" hint-placeholder-count="3">
+                        <p style="margin:0;font-size:15px;line-height:1.6;text-align:justify;hyphens:auto">{{para}}</p>
+                      </sc-for>
+                      <div style="border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);padding:12px 0">
+                        <div style="font-family:var(--font-heading);font-size:20px;color:var(--color-accent-700)">It didn’t end my career.</div>
+                        <div style="font-size:14px;margin-top:4px">{{st.now}}</div>
+                      </div>
+                      <div style="display:flex;gap:10px;flex-wrap:wrap">
+                        <button type="button" onClick="{{storyMeToo}}" style="flex:1 1 200px;display:flex;justify-content:space-between;align-items:center;min-height:44px;padding:0 14px;border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);background:{{stMeBg}};cursor:pointer;font-family:var(--font-body);color:var(--color-text)">
+                          <span style="font-family:var(--font-heading);font-size:17px">Me too</span>
+                          <span style="font-size:12px;font-feature-settings:'tnum' 1">{{stMeCount}} people felt this</span>
+                        </button>
+                        <button type="button" class="btn btn-primary" onClick="{{finishStory}}" style="flex:1 1 200px;min-height:44px">{{finishLabel}}</button>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmAssoc}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:14px;max-width:640px;margin:0 auto">
+                      <sc-if value="{{agPlaying}}" hint-placeholder-val="{{ true }}">
+                        <div style="display:flex;flex-direction:column;gap:14px">
+                          <div style="display:flex;justify-content:space-between;font-size:10px;letter-spacing:0.14em;text-transform:uppercase"><span style="color:var(--color-accent-700)">{{sc.when}} · {{sc.where}}</span><span style="color:var(--color-neutral-700);font-feature-settings:'tnum' 1">{{agProgress}}</span></div>
+                          <div style="background:#2c3040;color:#ece4d6;border:3px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:16px 18px">
+                            <p style="margin:0;font-size:15px;line-height:1.6;text-wrap:pretty">{{sc.text}}</p>
+                          </div>
+                          <div style="font-family:var(--font-heading);font-size:20px">{{sc.q}}</div>
+                          <div style="display:flex;flex-direction:column;gap:8px">
+                            <sc-for list="{{agChoices}}" as="c" hint-placeholder-count="3">
+                              <button type="button" onClick="{{c.go}}" style="display:flex;flex-direction:column;gap:6px;text-align:left;min-height:44px;padding:10px 14px;border:2px solid {{c.br}};border-radius:var(--radius-sm);background:{{c.bg}};color:var(--color-text);cursor:pointer;font-family:var(--font-body);font-size:14px;line-height:1.4;opacity:{{c.op}}">
+                                <span>{{c.t}}</span>
+                                <span style="display:{{c.barOn}};align-items:center;gap:8px;font-size:11px;font-feature-settings:'tnum' 1;color:var(--color-accent-800)">
+                                  <span style="flex:1;height:4px;background:var(--color-neutral-200);border-radius:2px;overflow:hidden"><span style="display:block;height:100%;width:{{c.w}};background:var(--color-accent)"></span></span>{{c.pct}} of players
+                                </span>
+                              </button>
+                            </sc-for>
+                          </div>
+                          <sc-if value="{{agNoteOn}}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;flex-direction:column;gap:12px">
+                              <div style="border:1px solid var(--color-accent);border-radius:var(--radius-sm);padding:12px 14px">
+                                <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">{{agNoteKicker}}</div>
+                                <p style="margin:6px 0 0;font-size:14px;line-height:1.5;text-wrap:pretty">{{agNote}}</p>
+                              </div>
+                              <button type="button" class="btn btn-primary" onClick="{{agNext}}" style="align-self:flex-end">{{agNextLabel}}</button>
+                            </div>
+                          </sc-if>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{agEnded}}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;flex-direction:column;gap:14px">
+                          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">Friday evening · Ending</div>
+                          <div style="font-family:var(--font-heading);font-size:34px;line-height:1.05">{{agEnd.t}}</div>
+                          <p style="margin:0;font-size:15px;line-height:1.55;text-wrap:pretty">{{agEnd.body}}</p>
+                          <div style="font-size:13px;color:var(--color-neutral-700)">There is no wrong ending. Only totals of choices are recorded, never who made them.</div>
+                          <button type="button" onClick="{{agEndStory}}" style="display:flex;gap:12px;align-items:center;text-align:left;background:transparent;border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:12px 14px;cursor:pointer;font-family:var(--font-body);color:var(--color-text)" style-hover="background:var(--color-accent-100)">
+                            <div role="img" aria-label="Character" style="width:32px;height:48px;image-rendering:pixelated;flex:none;background-image:url({{agEndSt.img}});background-size:100% 100%;background-repeat:no-repeat"></div>
+                            <span>
+                              <span style="display:block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">A senior went through something similar</span>
+                              <span style="display:block;font-family:var(--font-heading);font-size:19px;margin-top:3px">{{agEndSt.title}} ›</span>
+                            </span>
+                          </button>
+                          <div style="display:flex;gap:8px;justify-content:flex-end">
+                            <button type="button" class="btn btn-secondary" onClick="{{agRestart}}">Play again</button>
+                            <button type="button" class="btn btn-primary" onClick="{{goHelp}}">See how booking works</button>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmQuiz}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:14px;max-width:520px;margin:0 auto">
+                      <sc-if value="{{qzPlaying}}" hint-placeholder-val="{{ true }}">
+                        <div style="display:flex;flex-direction:column;gap:14px">
+                          <div style="display:flex;justify-content:space-between;font-size:11px;letter-spacing:0.12em;text-transform:uppercase">
+                            <span style="color:#8a3628">‹ Fear</span><span style="color:var(--color-neutral-700);font-feature-settings:'tnum' 1">{{qzProgress}} · drag or tap</span><span style="color:var(--color-accent-700)">Fact ›</span>
+                          </div>
+                          <div onPointerDown="{{qzDown}}" onPointerMove="{{qzMove}}" onPointerUp="{{qzUp}}" onPointerCancel="{{qzUp}}" style="touch-action:none;user-select:none;cursor:grab;min-height:200px;display:flex;flex-direction:column;justify-content:space-between;background:var(--color-surface);border:3px solid {{qzCardBr}};border-radius:var(--radius-md);box-shadow:var(--shadow-md);padding:20px;transform:translateX({{qzDx}}px) rotate({{qzRot}}deg);transition:{{qzTrans}}">
+                            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-neutral-700)">Statement {{qzNum}}</div>
+                            <div style="font-family:var(--font-heading);font-size:23px;line-height:1.2;text-wrap:pretty">“{{qz.s}}”</div>
+                            <div style="font-size:12px;letter-spacing:0.1em;text-transform:uppercase;color:{{qzHintInk}};text-align:center;min-height:16px">{{qzHint}}</div>
+                          </div>
+                          <sc-if value="{{qzRevealOn}}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;flex-direction:column;gap:12px">
+                              <div style="border:1px solid var(--color-accent);border-radius:var(--radius-sm);padding:12px 14px">
+                                <div style="font-family:var(--font-heading);font-size:18px;color:var(--color-accent-700)">{{qzVerdict}}</div>
+                                <p style="margin:6px 0 0;font-size:14px;line-height:1.5;text-wrap:pretty">{{qz.why}}</p>
+                              </div>
+                              <button type="button" class="btn btn-primary" onClick="{{qzNext}}" style="align-self:flex-end">{{qzNextLabel}}</button>
+                            </div>
+                          </sc-if>
+                          <sc-if value="{{qzButtonsOn}}" hint-placeholder-val="{{ true }}">
+                            <div style="display:flex;gap:10px">
+                              <button type="button" onClick="{{qzFear}}" style="flex:1;min-height:48px;border:2px solid #a94436;color:#8a3628;background:transparent;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-heading);font-size:20px" style-hover="background:#f6e4e0">Fear</button>
+                              <button type="button" onClick="{{qzFact}}" style="flex:1;min-height:48px;border:2px solid var(--color-accent);color:var(--color-accent-700);background:transparent;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-heading);font-size:20px" style-hover="background:var(--color-accent-100)">Fact</button>
+                            </div>
+                          </sc-if>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{qzDone}}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;flex-direction:column;gap:12px">
+                          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">{{qzRoundLabel}}</div>
+                          <div style="font-family:var(--font-heading);font-size:46px;line-height:1;font-feature-settings:'tnum' 1">{{qzScore}} / {{qzTotal}}</div>
+                          <p style="margin:0;font-size:15px;line-height:1.55;text-wrap:pretty">Your score stays on this device. SAL sees only the average before and after the townhall.</p>
+                          <sc-for list="{{quizRows}}" as="r" hint-placeholder-count="2">
+                            <div style="display:flex;justify-content:space-between;font-size:13px;border-top:1px solid var(--color-divider);padding-top:8px"><span>{{r.k}}</span><span style="font-feature-settings:'tnum' 1">{{r.v}}</span></div>
+                          </sc-for>
+                          <div style="display:flex;gap:8px;justify-content:flex-end">
+                            <button type="button" class="btn btn-secondary" onClick="{{qzRestart}}">Play again</button>
+                            <button type="button" class="btn btn-primary" onClick="{{goHelp}}">Help Desk</button>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmSignal}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:14px;max-width:560px;margin:0 auto">
+                      <sc-if value="{{sgPlaying}}" hint-placeholder-val="{{ true }}">
+                        <div style="display:flex;flex-direction:column;gap:12px">
+                          <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px">
+                            <div style="font-family:var(--font-heading);font-size:21px;line-height:1.15">Would you notice this in a colleague?</div>
+                            <div style="font-size:11px;font-feature-settings:'tnum' 1;color:var(--color-neutral-700);white-space:nowrap">{{sgProgress}}</div>
+                          </div>
+                          <div style="background:#2c3040;color:#ece4d6;border:3px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:14px 16px">
+                            <p style="margin:0;font-size:15px;line-height:1.55;text-wrap:pretty">{{sg.v}}</p>
+                          </div>
+                          <div style="font-size:12px;color:var(--color-neutral-700)">Which early sign is this?</div>
+                          <div style="display:flex;flex-direction:column;gap:8px">
+                            <sc-for list="{{sgOpts}}" as="o" hint-placeholder-count="3">
+                              <button type="button" onClick="{{o.go}}" style="min-height:42px;text-align:left;padding:0 14px;border:{{o.bw}} solid {{o.br}};background:{{o.bg}};border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-body);font-size:14px;color:var(--color-text)">{{o.t}}</button>
+                            </sc-for>
+                          </div>
+                          <sc-if value="{{sgRevealOn}}" hint-placeholder-val="{{ false }}">
+                            <div style="display:flex;flex-direction:column;gap:12px">
+                              <div style="border:1px solid var(--color-accent);border-radius:var(--radius-sm);padding:12px 14px;font-size:14px;line-height:1.5;text-wrap:pretty">{{sgReveal}}</div>
+                              <button type="button" class="btn btn-primary" onClick="{{sgNext}}" style="align-self:flex-end">{{sgNextLabel}}</button>
+                            </div>
+                          </sc-if>
+                        </div>
+                      </sc-if>
+                      <sc-if value="{{sgDone}}" hint-placeholder-val="{{ false }}">
+                        <div style="display:flex;flex-direction:column;gap:12px">
+                          <div style="font-family:var(--font-heading);font-size:28px;line-height:1.1">Noticing is the first step</div>
+                          <p style="margin:0;font-size:15px;line-height:1.55;text-wrap:pretty">These are signs seniors say they missed in themselves. If you recognised one in your own week, the Help Desk shows what happens when you book.</p>
+                          <div style="font-size:12px;color:var(--color-neutral-700)">This is not a diagnostic test.</div>
+                          <button type="button" class="btn btn-primary" onClick="{{goHelp}}" style="align-self:flex-end">Go to the Help Desk</button>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmHelp}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:16px">
+                      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;align-items:start">
+                        <div style="display:flex;flex-direction:column">
+                          <div style="font-family:var(--font-heading);font-size:19px;margin-bottom:8px">Who sees what</div>
+                          <div style="border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:10px 14px">
+                            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">You</div>
+                            <div style="font-family:var(--font-heading);font-size:17px">Book a session</div>
+                          </div>
+                          <div style="height:26px;display:flex;align-items:center;font-size:12px;color:var(--color-neutral-700);border-left:2px solid var(--color-neutral-900);margin-left:26px;padding-left:12px">your name and contact</div>
+                          <div style="border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:10px 14px">
+                            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">Singlife</div>
+                            <div style="font-family:var(--font-heading);font-size:17px">Runs the session</div>
+                          </div>
+                          <div style="height:26px;display:flex;align-items:center;font-size:12px;color:var(--color-neutral-700);border-left:2px dashed var(--color-neutral-900);margin-left:26px;padding-left:12px">a number only</div>
+                          <div style="border:2px solid var(--color-accent);border-radius:var(--radius-sm);padding:10px 14px;display:flex;justify-content:space-between;align-items:center">
+                            <div>
+                              <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">SAL</div>
+                              <div style="font-family:var(--font-heading);font-size:17px">Sees a count</div>
+                            </div>
+                            <div style="font-family:var(--font-heading);font-size:28px;color:var(--color-accent-700);font-feature-settings:'tnum' 1">+1</div>
+                          </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:12px">
+                          <div style="border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:12px 14px">
+                            <div style="display:flex;justify-content:space-between;align-items:baseline">
+                              <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">Booking walkthrough</div>
+                              <div style="font-size:11px;font-feature-settings:'tnum' 1;color:var(--color-neutral-700)">Step {{hbNum}} of 4</div>
+                            </div>
+                            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:8px">
+                              <sc-for list="{{hbBar}}" as="s" hint-placeholder-count="4">
+                                <div style="height:5px;border-radius:2px;background:{{s.bg}}"></div>
+                              </sc-for>
+                            </div>
+                            <div style="font-family:var(--font-heading);font-size:18px;margin-top:10px">{{hbStep.t}}</div>
+                            <p style="margin:4px 0 0;font-size:14px;line-height:1.5;text-wrap:pretty">{{hbStep.d}}</p>
+                            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px">
+                              <sc-for list="{{hbStep.chips}}" as="c" hint-placeholder-count="0">
+                                <span class="tag tag-outline" style="font-size:12px">{{c}}</span>
+                              </sc-for>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;gap:8px;margin-top:12px">
+                              <button type="button" class="btn btn-ghost" onClick="{{hbBack}}" style="font-size:13px">Back</button>
+                              <button type="button" class="btn btn-primary" onClick="{{hbNext}}" style="font-size:13px">{{hbNextLabel}}</button>
+                            </div>
+                          </div>
+                          <button type="button" onClick="{{protectHour}}" style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;border:1px solid var(--color-accent);border-radius:var(--radius-sm);background:transparent;cursor:pointer;font-family:var(--font-body);color:var(--color-text);text-align:left" style-hover="background:var(--color-accent-100)">
+                            <span>
+                              <span style="display:block;font-family:var(--font-heading);font-size:17px">Protect an hour</span>
+                              <span style="display:block;font-size:12px;color:var(--color-neutral-700)">Adds “Personal appointment” to your calendar. No reason needed.</span>
+                            </span>
+                            <span style="font-size:18px;color:var(--color-accent-700)">+</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;border-top:1px solid var(--color-divider);padding-top:14px">
+                        <sc-for list="{{schemes}}" as="s" hint-placeholder-count="4">
+                          <div class="card" style="padding:12px;display:flex;flex-direction:column;gap:4px">
+                            <div style="font-family:var(--font-heading);font-size:16px;line-height:1.15">{{s.t}}</div>
+                            <div style="font-size:12px;line-height:1.4;color:var(--color-neutral-800);text-wrap:pretty">{{s.d}}</div>
+                          </div>
+                        </sc-for>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmNotice}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:10px">
+                      <div style="display:flex;gap:6px;flex-wrap:wrap">
+                        <sc-for list="{{evFilters}}" as="f" hint-placeholder-count="4">
+                          <button type="button" onClick="{{f.go}}" style="min-height:32px;padding:0 12px;border:1px solid {{f.br}};background:{{f.bg}};border-radius:16px;cursor:pointer;font-family:var(--font-body);font-size:12px;color:var(--color-text)">{{f.t}}</button>
+                        </sc-for>
+                      </div>
+                      <sc-for list="{{events}}" as="e" hint-placeholder-count="3">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 0;border-top:1px solid var(--color-divider)">
+                          <div style="flex:1 1 300px;min-width:0">
+                            <div style="font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--color-accent-700);font-feature-settings:'tnum' 1">{{e.when}} · {{e.where}}</div>
+                            <div style="font-family:var(--font-heading);font-size:18px;line-height:1.15">{{e.t}}</div>
+                            <div style="font-size:12px;color:var(--color-neutral-700)">{{e.who}}</div>
+                          </div>
+                          <button type="button" class="btn btn-secondary" onClick="{{e.add}}" style="font-size:13px">Add to calendar</button>
+                        </div>
+                      </sc-for>
+                      <div style="font-size:11px;color:var(--color-neutral-700)">Sample dates for the demo.</div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmSuggest}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:10px">
+                      <div style="display:flex;gap:8px">
+                        <input class="input" value="{{sDraft}}" onChange="{{setSDraft}}" placeholder="Suggest something, anonymously" style="flex:1;min-width:0;height:40px;box-sizing:border-box">
+                        <button type="button" class="btn btn-primary" onClick="{{sendS}}" style="height:40px">Post</button>
+                      </div>
+                      <sc-for list="{{suggestions}}" as="s" hint-placeholder-count="3">
+                        <div style="display:flex;gap:10px;align-items:flex-start;padding:12px 0;border-top:1px solid var(--color-divider)">
+                          <button type="button" onClick="{{s.vote}}" style="flex:none;width:42px;min-height:42px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid {{s.br}};border-radius:var(--radius-sm);background:transparent;cursor:pointer;font-family:var(--font-body);color:var(--color-text)">
+                            <span style="font-size:10px">▲</span><span style="font-size:13px;font-feature-settings:'tnum' 1">{{s.v}}</span>
+                          </button>
+                          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+                            <div style="font-size:14px;line-height:1.4;text-wrap:pretty">{{s.t}}</div>
+                            <div style="font-size:13px;line-height:1.4;border-left:2px solid var(--color-accent);padding-left:10px;color:var(--color-neutral-800);text-wrap:pretty">{{s.reply}}</div>
+                          </div>
+                        </div>
+                      </sc-for>
+                      <div style="font-size:11px;color:var(--color-neutral-700)">Sample replies. SAL and the YLC answer publicly.</div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmPulse}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:flex;flex-direction:column;gap:14px;max-width:560px;margin:0 auto">
+                      <p style="margin:0;font-size:14px;line-height:1.5;color:var(--color-neutral-800);text-wrap:pretty">About career risk and what you know, not how you feel. Answers stay linked to this device’s random code {{p.code}}.</p>
+                      <sc-for list="{{pulseQs}}" as="q" hint-placeholder-count="3">
+                        <div style="display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--color-divider);padding-top:12px">
+                          <div style="font-size:15px;line-height:1.4">{{q.t}}</div>
+                          <div style="display:flex;gap:6px">
+                            <sc-for list="{{q.opts}}" as="o" hint-placeholder-count="5">
+                              <button type="button" onClick="{{o.go}}" style="flex:1;min-height:40px;border:1px solid {{o.br}};background:{{o.bg}};border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-body);font-size:14px;color:var(--color-text);font-feature-settings:'tnum' 1">{{o.t}}</button>
+                            </sc-for>
+                          </div>
+                          <div style="display:{{q.endsOn}};justify-content:space-between;font-size:11px;color:var(--color-neutral-700)"><span>Disagree</span><span>Agree</span></div>
+                        </div>
+                      </sc-for>
+                      <div style="display:flex;gap:8px;justify-content:flex-end">
+                        <button type="button" class="btn btn-ghost" onClick="{{skipPulse}}">{{skipLabel}}</button>
+                        <button type="button" class="btn btn-primary" onClick="{{savePulse}}" disabled="{{pulseIncomplete}}">{{saveLabel}}</button>
+                      </div>
+                    </div>
+                  </sc-if>
+
+                  <sc-if value="{{rmWelcome}}" hint-placeholder-val="{{ false }}">
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px;align-items:start">
+                      <div style="display:flex;flex-direction:column;gap:12px">
+                        <div style="font-family:var(--font-heading);font-size:30px;line-height:1.05">No login. No name. No firm.</div>
+                        <p style="margin:0;font-size:15px;line-height:1.55;text-wrap:pretty">You’re known here only by a random name, stored in this browser. Seniors share how they sought help and kept their careers. You walk around, listen, ask anonymously and play. Nobody asks you to disclose anything.</p>
+                        <p style="margin:0;font-size:13px;line-height:1.5;color:var(--color-neutral-700);text-wrap:pretty">Walk with WASD or the arrow keys, or click where you want to go. Press E at a door to go in, or next to someone to talk.</p>
+                      </div>
+                      <div style="display:flex;flex-direction:column;gap:10px;border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:14px">
+                        <div style="display:flex;gap:14px;align-items:center">
+                          <div style="width:64px;height:96px;flex:none;background:#d0ccbc;border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center">
+                            <div role="img" aria-label="Character" style="width:48px;height:72px;image-rendering:pixelated;;background-image:url({{avUrl}});background-size:100% 100%;background-repeat:no-repeat"></div>
+                          </div>
+                          <div style="flex:1;min-width:0">
+                            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-neutral-700)">You are</div>
+                            <div style="font-family:var(--font-heading);font-size:23px;line-height:1.1">{{p.handle}}</div>
+                            <button type="button" class="btn btn-ghost" onClick="{{reroll}}" style="padding:3px 0;font-size:13px">Pick another name</button>
+                          </div>
+                        </div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap">
+                          <sc-for list="{{shirtOpts}}" as="c" hint-placeholder-count="6">
+                            <button type="button" onClick="{{c.go}}" aria-label="Shirt colour" style="width:24px;height:24px;border-radius:4px;background:{{c.c}};border:2px solid {{c.br}};cursor:pointer;padding:0"></button>
+                          </sc-for>
+                        </div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap">
+                          <sc-for list="{{skinOpts}}" as="c" hint-placeholder-count="5">
+                            <button type="button" onClick="{{c.go}}" aria-label="Skin tone" style="width:24px;height:24px;border-radius:50%;background:{{c.c}};border:2px solid {{c.br}};cursor:pointer;padding:0"></button>
+                          </sc-for>
+                        </div>
+                        <div style="display:flex;gap:6px;flex-wrap:wrap">
+                          <sc-for list="{{styleOpts}}" as="h" hint-placeholder-count="5">
+                            <button type="button" onClick="{{h.go}}" style="min-height:30px;padding:0 10px;border:1px solid {{h.br}};background:{{h.bg}};border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-body);font-size:12px;color:var(--color-text)">{{h.t}}</button>
+                          </sc-for>
+                        </div>
+                        <div style="font-size:12px;color:var(--color-neutral-700);margin-top:4px">Optional: years of standing · firm size</div>
+                        <div style="display:flex;gap:6px">
+                          <sc-for list="{{pqeOpts}}" as="o" hint-placeholder-count="3">
+                            <button type="button" onClick="{{o.go}}" style="flex:1;min-height:32px;border:1px solid {{o.br}};background:{{o.bg}};border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-body);font-size:12px;color:var(--color-text);font-feature-settings:'tnum' 1">{{o.t}}</button>
+                          </sc-for>
+                        </div>
+                        <div style="display:flex;gap:6px">
+                          <sc-for list="{{firmOpts}}" as="o" hint-placeholder-count="3">
+                            <button type="button" onClick="{{o.go}}" style="flex:1;min-height:32px;border:1px solid {{o.br}};background:{{o.bg}};border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-body);font-size:12px;color:var(--color-text);font-feature-settings:'tnum' 1">{{o.t}}</button>
+                          </sc-for>
+                        </div>
+                        <button type="button" class="btn btn-primary" onClick="{{obNext}}" style="margin-top:6px">Continue</button>
+                      </div>
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{sheetOn}}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center">
+              <div onClick="{{closeSheet}}" style="position:absolute;inset:0;background:rgba(20,22,32,0.62)"></div>
+              <div style="position:relative;width:min(440px,90%);background:var(--color-surface);border:3px solid var(--color-neutral-900);border-radius:var(--radius-md);padding:18px 20px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow-lg)">
+                <div style="font-family:var(--font-heading);font-size:24px">Need help now?</div>
+                <div style="font-size:13px;line-height:1.45;color:var(--color-neutral-800)">You don’t need to give your name or firm.</div>
+                <sc-for list="{{lines}}" as="l" hint-placeholder-count="3">
+                  <a href="{{l.href}}" style="display:flex;justify-content:space-between;align-items:center;min-height:48px;padding:0 14px;border:1px solid var(--color-accent);border-radius:var(--radius-sm);text-decoration:none;color:var(--color-text)">
+                    <span><span style="display:block;font-size:14px">{{l.t}}</span><span style="display:block;font-size:11px;color:var(--color-neutral-700)">{{l.s}}</span></span>
+                    <span style="font-family:var(--font-heading);font-size:18px;color:var(--color-accent-700);font-feature-settings:'tnum' 1">{{l.n}}</span>
+                  </a>
+                </sc-for>
+                <div style="font-size:11px;color:var(--color-neutral-700)">Numbers to be verified before launch.</div>
+                <button type="button" class="btn btn-secondary" onClick="{{closeSheet}}">Close</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{toastOn}}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;left:50%;top:14px;transform:translateX(-50%);z-index:40;background:#2c3040;color:#ece4d6;border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:7px 14px;font-size:13px;max-width:90%;box-sizing:border-box;text-align:center;box-shadow:var(--shadow-md)">{{toast}}</div>
+          </sc-if>
+        </div>
+        <div style="display:flex;gap:8px 18px;flex-wrap:wrap;align-items:center;padding-top:10px;font-size:12px;letter-spacing:0.04em;color:rgba(236,228,214,0.65)">
+          <span>WASD / arrows · walk</span><span>Shift · hurry</span><span>E · enter or talk</span><span>Click · walk there</span><span>Esc · leave a room</span>
+          <div style="display:flex;align-items:center;gap:10px;margin-left:auto">
+            <span style="font-style:italic">{{musicNow}}</span>
+            <button type="button" onClick="{{toggleMusic}}" style="min-height:30px;padding:0 12px;background:transparent;color:#ece4d6;border:1px solid rgba(236,228,214,0.35);border-radius:15px;cursor:pointer;font-family:var(--font-body);font-size:12px;letter-spacing:0.04em" style-hover="background:rgba(236,228,214,0.1)">Music · {{musicLabel}}</button>
+          </div>
+        </div>
+      </div>
+
+      <div style="flex:1 1 300px;min-width:0;columns:260px;column-gap:14px;color:var(--color-text)">
+        <div style="break-inside:avoid;margin:0 0 14px;background:var(--color-surface);border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow-sm)">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:52px;height:76px;flex:none;background:#d0ccbc;border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center">
+              <div role="img" aria-label="Character" style="width:32px;height:48px;image-rendering:pixelated;;background-image:url({{avUrl}});background-size:100% 100%;background-repeat:no-repeat"></div>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-family:var(--font-heading);font-size:20px;line-height:1.05">{{p.handle}}</div>
+              <div style="font-size:11px;color:var(--color-neutral-700)">Anonymous on this device</div>
+              <button type="button" class="btn btn-ghost" onClick="{{reroll}}" style="padding:2px 0;font-size:12px">New random name</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <sc-for list="{{shirtOpts}}" as="c" hint-placeholder-count="6">
+              <button type="button" onClick="{{c.go}}" aria-label="Shirt colour" style="width:22px;height:22px;border-radius:4px;background:{{c.c}};border:2px solid {{c.br}};cursor:pointer;padding:0"></button>
+            </sc-for>
+          </div>
+          <div style="display:flex;gap:5px;flex-wrap:wrap">
+            <sc-for list="{{styleOpts}}" as="h" hint-placeholder-count="5">
+              <button type="button" onClick="{{h.go}}" style="min-height:28px;padding:0 9px;border:1px solid {{h.br}};background:{{h.bg}};border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-body);font-size:12px;color:var(--color-text)">{{h.t}}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="break-inside:avoid;margin:0 0 14px;background:var(--color-surface);border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:14px;box-shadow:var(--shadow-sm)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">Community lanterns</div>
+            <div style="font-size:11px;font-feature-settings:'tnum' 1;color:var(--color-neutral-700)">{{litCount}} of 12 lit</div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:8px">
+            <sc-for list="{{lanterns}}" as="l" hint-placeholder-count="12">
+              <div style="height:14px;border:2px solid var(--color-neutral-900);border-radius:3px 3px 5px 5px;background:{{l.bg}};box-shadow:{{l.glow}}"></div>
+            </sc-for>
+          </div>
+          <p style="margin:8px 0 0;font-size:12px;line-height:1.45;text-wrap:pretty">{{helpCount}} juniors have walked through the Help Desk this year. The square lights up as the village takes part. Nobody is ranked.</p>
+        </div>
+
+        <div style="break-inside:avoid;margin:0 0 14px;background:var(--color-surface);border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:10px 14px 12px;box-shadow:var(--shadow-sm)">
+          <div style="display:flex;justify-content:space-between;align-items:baseline;padding-bottom:4px">
+            <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">Places · passport</div>
+            <div style="font-size:11px;font-feature-settings:'tnum' 1;color:var(--color-neutral-700)">{{stampCount}}/8 stamps</div>
+          </div>
+          <sc-for list="{{placeList}}" as="pl" hint-placeholder-count="8">
+            <button type="button" onClick="{{pl.go}}" style="width:100%;display:flex;align-items:center;gap:10px;padding:6px 0;border:none;border-top:1px solid var(--color-divider);background:transparent;cursor:pointer;text-align:left;font-family:var(--font-body);color:var(--color-text)" style-hover="background:var(--color-accent-100)">
+              <span style="width:18px;height:18px;flex:none;border:2px {{pl.bs}} {{pl.br}};border-radius:50%;background:{{pl.bg}};display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--color-accent-800)">{{pl.mark}}</span>
+              <span style="flex:1;min-width:0">
+                <span style="display:block;font-size:14px">{{pl.n}}</span>
+                <span style="display:block;font-size:11px;color:var(--color-neutral-700)">{{pl.s}}</span>
+              </span>
+              <span style="font-size:11px;color:var(--color-accent-700)">Walk ›</span>
+            </button>
+          </sc-for>
+          <div style="font-size:11px;color:var(--color-neutral-700);border-top:1px solid var(--color-divider);padding-top:8px">{{badgeLine}}</div>
+        </div>
+
+        <div style="break-inside:avoid;margin:0 0 14px;background:var(--color-surface);border:2px solid var(--color-neutral-900);border-radius:var(--radius-sm);padding:12px 14px;display:flex;flex-direction:column;gap:6px;box-shadow:var(--shadow-sm)">
+          <div style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--color-accent-700)">Pulse check</div>
+          <sc-for list="{{pulseRows}}" as="r" hint-placeholder-count="3">
+            <div style="display:flex;justify-content:space-between;gap:10px;font-size:12px">
+              <span>{{r.k}}</span><span style="font-feature-settings:'tnum' 1;color:var(--color-neutral-700);text-align:right">{{r.v}}</span>
+            </div>
+          </sc-for>
+          <button type="button" class="btn btn-secondary" onClick="{{openPulse}}" style="align-self:flex-start;font-size:12px;padding:5px 12px;margin-top:4px">{{pulseLabel}}</button>
+          <button type="button" onClick="{{wipe}}" style="margin-top:6px;min-height:34px;border:1px solid #a94436;color:#8a3628;background:transparent;border-radius:var(--radius-sm);cursor:pointer;font-family:var(--font-body);font-size:12px" style-hover="background:#f6e4e0">Delete everything on this device</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showOnboarding&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;},&quot;evening&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;World&quot;},&quot;crowd&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:14,&quot;min&quot;:0,&quot;max&quot;:24,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;World&quot;},&quot;liveRoom&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Simulation&quot;}}">
+const KEY = 'wellnessVillage.v1';
+const VW = 576, VH = 384, WW = 1440, WH = 576;
+const ZONES = [[740, 330, 300, 110], [520, 150, 620, 56], [474, 40, 28, 490], [200, 200, 140, 270], [1158, 214, 24, 320], [540, 320, 140, 100], [1210, 400, 100, 60]];
+const ADJ = ['Copper','Jade','Saffron','Indigo','Amber','Slate','Coral','Ivory','Teal','Ochre','Plum','Sage'];
+const NOUN = ['Heron','Kingfisher','Otter','Hornbill','Pangolin','Tembusu','Sunbird','Egret','Gecko','Banyan','Dugong','Mynah'];
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const rnd = (a, b) => a + Math.random() * (b - a);
+const handle = () => pick(ADJ) + ' ' + pick(NOUN);
+const SHIRTS = ['#c8d2d7', '#d94f3d', '#5b7fa6', '#4f7f5f', '#c46a8a', '#e0b53c'];
+const SKINS = ['#f1c9a5', '#e3ab84', '#c98a5e', '#b57a4e', '#8a5a3a'];
+const STYLES = [['long', 'Long'], ['short', 'Short'], ['bun', 'Bun'], ['cap', 'Cap'], ['bald', 'Shaved']];
+const INK = '#2c3040';
+const fresh = () => ({ handle: handle(), code: Math.random().toString(36).slice(2, 8).toUpperCase(), shirt: 0, skin: 1, style: 0, onboarded: false, stamps: [], pulse: { pre: null, post: null }, quiz: { pre: null, post: null }, metoo: [], pqe: null, firm: null });
+const charDef = p => ({ hair: '#191a3a', skin: SKINS[p.skin], shirt: SHIRTS[p.shirt], pants: '#6d4cb5', shoes: '#191a32', style: STYLES[p.style][0], cap: SHIRTS[p.shirt], extra: 'lanyard' });
+
+const STORIES = [
+  { id: 's1', npc: 'meiLing', title: 'The first-year wall', who: 'Partner, commercial disputes', years: '21 years’ call', mode: 'Audio · 75 sec', tags: ['First-year shock', 'Using counselling'], base: 128,
+    body: ['In my first year I billed through two Chinese New Years. I thought the tiredness was the price of admission and that everyone else was coping better than me.', 'A senior associate noticed I had stopped eating lunch. She didn’t make a speech. She told me she had seen a counsellor in her second year and gave me the number.', 'I went four times. Nobody at the firm knew unless I told them, and years later, I did.'],
+    now: 'Now a partner, and the person juniors on her floor come to first.' },
+  { id: 's2', npc: 'andy', title: 'Burnout in year four', who: 'General counsel, formerly litigation', years: '15 years’ call', mode: 'Video · 90 sec', tags: ['Burnout', 'Taking leave', 'Moving in-house'], base: 96,
+    body: ['By my fourth year I could draft a submission half-asleep, which was lucky, because I mostly was.', 'My doctor gave me two weeks of medical leave. I was sure it would follow me. The matter was reassigned and the world kept turning.', 'Taking the leave was what let me make a clear decision about what came next.'],
+    now: 'Now general counsel at a regional company.' },
+  { id: 's3', npc: 'suzanne', title: 'The supervisor I dreaded', who: 'Founder, small firm', years: '12 years’ call', mode: 'Text · 2 min read', tags: ['A bad supervisor', 'Using counselling'], base: 74,
+    body: ['Every email from my supervisor made my stomach drop. I started checking my phone at 3am in case I had missed one.', 'I used two counselling sessions to work out what I could control. It was less than I hoped and more than I thought.', 'I moved teams six months later. I asked for the move myself.'],
+    now: 'Now runs her own five-lawyer practice.' }
+];
+const SENIORS = [
+  { name: 'meiLing', story: 's1', role: 'Senior · Partner, 21 years’ call', line: 'I didn’t tell anyone for ten years. My story’s in the library, if you want it.', goLabel: 'Hear her story' },
+  { name: 'andy', story: 's2', role: 'Senior · General counsel, 15 years’ call', line: 'I took two weeks of medical leave in year four. It didn’t follow me. I’ll be answering questions in the Main Hall.', goLabel: 'Hear his story' },
+  { name: 'suzanne', story: 's3', role: 'Senior · Small-firm founder, 12 years’ call', line: 'Small firm? There’s a breakout room after the townhall. I’ll be in it.', goLabel: 'Hear her story' }
+];
+const HOST = { name: 'danial', role: 'YLC co-host', line: 'Townhall’s live inside. Questions are anonymous, and we check them for names before anything goes up.', goLabel: 'Go to the Main Hall', room: 'live' };
+
+const SCENES = [
+  { when: 'Monday · 11.40pm', where: 'Your desk, level 19', text: 'The affidavit is due Friday. You have reread the same paragraph four times and your chest is tight. Everyone else on the floor left an hour ago.', q: 'What do you do?', ch: [
+    { t: 'Stay silent. Push through till 2am.', help: 0, pct: 62, note: 'Most players choose this here. It is the usual first move, and nobody else would know.' },
+    { t: 'Text a friend from your call cohort.', help: 1, pct: 27, note: 'A peer can’t move the deadline, but saying it out loud often makes the next step easier to see.' },
+    { t: 'Call the 24-hour helpline.', help: 1, pct: 11, note: 'The helpline is there for nights like this, not only emergencies. You don’t need to give your firm’s name.' }] },
+  { when: 'Tuesday · 8.55am', where: 'Inbox', text: 'Your supervisor: “Need the bundle by tomorrow EOD as well. Thanks.” The affidavit has not moved since last night.', q: 'How do you reply?', ch: [
+    { t: '“Noted, will do.” Work through the night.', help: 0, pct: 58, note: 'Saying yes is the default for most juniors. It also means nobody knows the week is too full.' },
+    { t: 'Ask to move the bundle to Thursday noon, and say why.', help: 1, pct: 42, note: 'A specific ask (what, by when, why) is easier to agree to than a general “I’m swamped”.' }] },
+  { when: 'Wednesday · 1.10pm', where: 'Kopitiam downstairs', text: 'A senior associate mentions that SAL pays for counselling sessions with Singlife. “I used it in my third year,” she says, and goes back to her noodles.', q: 'Your first thought?', ch: [
+    { t: '“That’s for people who are really struggling.”', help: 0, pct: 49, note: 'Many players think this. The associate who mentioned it was in her third year, not in a crisis.' },
+    { t: 'Look up how booking works, later, on your phone.', help: 1, pct: 51, note: 'Knowing how it works is half of it. The Help Desk walks through every step.' }] },
+  { when: 'Wednesday · 10.30pm', where: 'Booking page', text: 'The page asks for a time and a contact number. Your thumb hovers over “Confirm”. You wonder who will see this.', q: 'Do you book?', ch: [
+    { t: 'Book an online session for Saturday morning.', help: 1, pct: 44, who: true, note: 'Singlife sees your booking so it can run the session. SAL only learns that somebody used the scheme.' },
+    { t: 'Close the tab. Maybe next month.', help: 0, pct: 56, who: true, note: 'The page will still be there. When you do book, SAL only learns that somebody used the scheme.' }] },
+  { when: 'Thursday · 7.15am', where: 'Your kitchen', text: 'You wake with a headache and dread about the day. You remember a line from a townhall: looking after your mind is like staying home when you’re physically sick.', q: 'And Saturday’s hour?', ch: [
+    { t: 'Block it as “Personal appointment”.', help: 1, pct: 53, note: 'A neutral calendar entry needs no explanation. The Help Desk has a button that makes one.' },
+    { t: 'Skip it. The filing matters more this week.', help: 0, pct: 47, note: 'Deadlines are real. So is the cost of running on empty for a whole career.' }] },
+  { when: 'Friday · 4.58pm', where: 'eLitigation', text: 'Filed, with two minutes to spare. You lean back in your chair for the first time all week.', q: 'Before you log off…', ch: [
+    { t: 'Tell Monday’s friend how the week went.', help: 1, pct: 61, note: 'Closing the loop makes it easier to reach out next time.' },
+    { t: 'Go home and sleep. Think about it next week.', help: 0, pct: 39, note: 'Sleep is a fine choice too.' }] }
+];
+const ENDINGS = [
+  { max: 1, t: 'The long way round', body: 'You got through the week on your own. Many seniors did too, for years, before they told anyone.', story: 's1' },
+  { max: 3, t: 'A door left open', body: 'You asked for a little room and found out where help sits. Nothing had to change all at once.', story: 's3' },
+  { max: 9, t: 'Back on your feet', body: 'You used what was there: a friend, a deadline conversation, a session. The filing still got done.', story: 's2' }
+];
+const QUIZ = [
+  { s: 'If I see a counsellor, the Law Society will be told my name.', a: 'fear', why: 'LawCare gives the Law Society non-identifying data only, and SAL doesn’t know who uses the Singlife scheme.' },
+  { s: 'My colleagues have a legal duty to report me.', a: 'fear', why: 'There is no duty to report a colleague under the Legal Profession Act or the Professional Conduct Rules.' },
+  { s: 'SAL members get free counselling sessions every year.', a: 'fact', why: 'The SAL–Singlife scheme gives three free counselling and three free coaching sessions a year, plus an app and a 24-hour helpline. It began in January 2025 as a two-year partnership.' },
+  { s: 'Lawyers have lost their practising certificates for going to counselling.', a: 'fear', why: 'No lawyer is known to have lost a practising certificate for going to counselling. The worry is about reputation, not a rule.' },
+  { s: 'LawCare is free.', a: 'fear', why: 'LawCare (Law Society) offers up to three counselling sessions, with the cost split 50/50 since 1 May 2022. The SAL–Singlife sessions are the free ones.' },
+  { s: 'I can have a session by video or phone, without travelling.', a: 'fact', why: 'Online and tele-session options are available, so there is no need to take half a day off.' },
+  { s: 'SAL gets a list of who booked a session.', a: 'fear', why: 'SAL does not know who used the scheme. Singlife reports anonymised counts to SAL for billing.' }
+];
+const SIGNALS = [
+  { v: 'Wei Ling used to joke in the pantry. For three weeks she has eaten at her desk and stopped replying to the cohort chat.', opts: ['Pulling away from people', 'Just busy this month', 'Saving money'], a: 0 },
+  { v: 'Arjun snapped at the paralegal over a missing tab, then apologised twice. It is the third time this month.', opts: ['Bad manners', 'Irritability under strain', 'A one-off'], a: 1 },
+  { v: 'On Sunday evenings, Grace says she feels sick thinking about Monday. It started in the spring.', opts: ['Dreading the week ahead', 'Sundays are just long', 'Ate too much'], a: 0 },
+  { v: 'Before every hearing, Daniel sleeps three or four hours. He says he’ll catch up after.', opts: ['Normal for litigators', 'Losing sleep before hearings', 'Good preparation'], a: 1 }
+];
+const HB = [
+  { t: 'Choose how to meet', d: 'Pick online, phone or in person. Online and tele-sessions mean no travel and no half-day off.', chips: ['Video', 'Phone', 'In person'] },
+  { t: 'Pick a time', d: 'Evening and weekend slots are listed alongside office hours.', chips: ['Sat 9.00am', 'Tue 7.30pm', 'Thu 8.00pm'] },
+  { t: 'Leave a contact', d: 'Only Singlife sees this, so it can confirm the session. It doesn’t go to SAL.', chips: ['Mobile number', 'Personal email'] },
+  { t: 'Booked', d: 'Singlife’s anonymised count to SAL goes up by one. Your name stays with Singlife.', chips: [] }
+];
+const EVENTS = [
+  { t: 'YLC Fireside Chat: the first two years', who: 'Young Lawyers Committee', when: 'Thu 20 Nov · 7.00pm', where: 'Online', area: 'All', d: '2026-11-20T19:00' },
+  { t: 'Law Society Townhall: wellbeing in practice', who: 'Law Society', when: 'Tue 2 Dec · 6.30pm', where: 'Hybrid', area: 'All', d: '2026-12-02T18:30' },
+  { t: 'Fireside Dialogue: sustaining a criminal practice', who: 'Senior Practitioners’ Committee', when: 'Wed 10 Dec · 7.30pm', where: 'In person', area: 'Criminal', d: '2026-12-10T19:30' },
+  { t: 'PIPD Bar Townhall', who: 'Law Society', when: 'Mon 15 Dec · 7.00pm', where: 'Hybrid', area: 'PIPD', d: '2026-12-15T19:00' },
+  { t: 'All the Small Chats: small-firm social', who: 'Young Lawyers Committee', when: 'Fri 9 Jan · 7.00pm', where: 'Online', area: 'Small firms', d: '2027-01-09T19:00' },
+  { t: 'Corporate juniors’ breakfast with mentors', who: 'Mentorship Scheme', when: 'Fri 16 Jan · 8.00am', where: 'In person', area: 'Corporate', d: '2027-01-16T08:00' }
+];
+const PULSE_Q = [
+  { k: 'risk', t: 'Using counselling could hurt my career.', opts: ['1', '2', '3', '4', '5'], ends: true },
+  { k: 'know', t: 'I know how to book a session.', opts: ['No', 'Yes'] },
+  { k: 'consider', t: 'I’d consider it if needed.', opts: ['1', '2', '3', '4', '5'], ends: true }
+];
+const FLAG = [
+  [/\b(LLP|LLC|Chambers|Law Corporation|& ?Co\b)/i, 'a possible firm name'],
+  [/\b(Mr|Ms|Mrs|Mdm|Dr|Justice)\.?\s+[A-Z]|\b[A-Z][a-z]+\s[A-Z][a-z]+\b/, 'a possible person’s name'],
+  [/\b(suit|case|HC|OS|DC|MC)\s*(no\.?)?\s*\/?\s*\d+/i, 'a possible case number']
+];
+
+// world places: art kind, draw origin, bbox [x,y,w,h], sign overpaint [dx,dy,w,h,bg,ink], door foot point
+const PLACES = [
+  { id: 'live', n: 'Main Hall', s: 'Live townhall', x: 524, y: 32, k: 1.35, nw: 112, nh: 76, bb: [524, 40, 151, 92], door: [601, 140], stamp: 'live' },
+  { id: 'library', n: 'Story Library', s: 'I went through this', x: 640, y: 444, k: 1.5, nw: 60, nh: 47, bb: [640, 452, 90, 60], door: [679, 520], stamp: 'stories' },
+  { id: 'help', n: 'Help Desk', s: 'How booking works', x: 716, y: 236, k: 1.5, nw: 60, nh: 47, bb: [716, 244, 90, 60], door: [755, 312], stamp: 'help' },
+  { id: 'assoc', n: 'Chambers', s: 'Play The Associate', x: 960, y: 440, k: 1.5, nw: 64, nh: 50, bb: [960, 448, 96, 64], door: [1008, 520], stamp: 'assoc' },
+  { id: 'quiz', n: 'Fact or Fear', s: 'Swipe quiz', x: 528, y: 224, k: 1.5, nw: 80, nh: 55, bb: [528, 232, 120, 72], door: [568, 312], stamp: 'quiz' },
+  { id: 'signal', n: 'Signal Tower', s: 'Spot the signs', x: 704, y: 48, k: 1.5, nw: 72, nh: 54, bb: [704, 56, 108, 70], door: [744, 134], stamp: 'signal' },
+  { id: 'notice', n: 'Notice Board', s: 'Events in one place', kind: 'board', x: 208, y: 162, bb: [208, 170, 48, 26], door: [232, 206], stamp: null },
+  { id: 'suggest', n: 'Suggestion Box', s: 'You said, we did', kind: 'box', x: 1062, y: 400, bb: [1056, 384, 28, 32], door: [1070, 424], stamp: null }
+];
+const ROOM_META = { live: ['Main Hall · SAL convenes, the YLC co-hosts', 'Junior lawyers’ townhall'], library: ['Story Library', 'I went through this'], help: ['Help Desk', 'Here’s exactly what happens when you book'], assoc: ['Chambers', 'The Associate'], quiz: ['Fact or Fear', 'Which of these is true?'], signal: ['Signal Tower', 'Spot the signs'], notice: ['Notice Board', 'Events in one place'], suggest: ['Suggestion Box', 'You said, we did'], pulse: ['Pulse check', 'Three quick questions'], welcome: ['Welcome to Wellness Village', 'Make your character'] };
+const STAMPS = ['s1', 's2', 's3', 'assoc', 'quiz', 'signal', 'help', 'live'];
+
+const EXC = ['.ooooo.', 'oYYYYYo', 'oYYoYYo', 'oYYoYYo', 'oYYoYYo', 'oYYYYYo', 'oYYoYYo', 'oYYYYYo', '.ooooo.', '..oYo..', '...o...'];
+const LAN = ['..o..', '.ooo.', 'oRRRo', 'oRYRo', 'oRRRo', '.ooo.', '..o..'];
+// cues from lpa-go-music.js (the LPA GO! soundtrack)
+const ROOM_MUSIC = { live: 'notebook', library: 'library', help: 'minimart', assoc: 'lawfirm', quiz: 'kopitiam', signal: 'boutique', notice: 'council', suggest: 'council', pulse: 'notebook', welcome: 'morning' };
+
+function ics(title, start, mins) {
+  const pad = n => String(n).padStart(2, '0');
+  const f = d => d.getUTCFullYear() + pad(d.getUTCMonth() + 1) + pad(d.getUTCDate()) + 'T' + pad(d.getUTCHours()) + pad(d.getUTCMinutes()) + '00Z';
+  const end = new Date(start.getTime() + mins * 60000);
+  const body = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Wellness Village//EN', 'BEGIN:VEVENT', 'UID:' + Date.now() + '@wellness-village', 'DTSTAMP:' + f(new Date()), 'DTSTART:' + f(start), 'DTEND:' + f(end), 'SUMMARY:' + title, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([body], { type: 'text/calendar' }));
+  a.download = title.replace(/\W+/g, '-') + '.ics';
+  document.body.appendChild(a); a.click(); a.remove();
+}
+
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    let p = null;
+    try { p = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch (e) {}
+    p = Object.assign(fresh(), p || {});
+    const ob = !p.onboarded && (props && props.showOnboarding) !== false;
+    this.state = {
+      p, room: ob ? 'welcome' : null, pulseMode: 'pre', pd: {}, sheet: false, toast: null, dlg: null, prompt: 'Walk around the square. Doors with a gold mark are new.', promptHot: false, ready: false,
+      story: null, playing: false, playT: 0,
+      ag: { i: 0, picks: [], sel: null, end: false }, qz: { i: 0, sel: null, score: 0, done: false, dx: 0, drag: false }, sg: { i: 0, sel: null, done: false },
+      hb: 0, evFilter: 'All', sDraft: '', qDraft: '', mod: null,
+      live: { metoo: 47, mine: false, floats: [], watching: 214, poll: null, counts: [38, 52, 41, 19], breakout: false },
+      qs: [
+        { id: 1, t: 'How did you know it was time to talk to someone?', v: 31, voted: false, st: 'live' },
+        { id: 2, t: 'Did your firm ever find out you used counselling?', v: 24, voted: false, st: 'live' },
+        { id: 3, t: 'What would you tell yourself in year one?', v: 12, voted: false, st: 'live' }
+      ],
+      sugg: [
+        { id: 1, t: 'Hold townhalls after 8pm so litigators can attend.', v: 84, voted: false, reply: 'You said, we did: the January session starts at 8.30pm, with a replay.' },
+        { id: 2, t: 'Let us book sessions without a phone call.', v: 61, voted: false, reply: 'Online booking is available. The Help Desk walks through it.' },
+        { id: 3, t: 'More stories from small-firm lawyers, please.', v: 47, voted: false, reply: 'We’re recording two for the next batch.' }
+      ]
+    };
+    this.fid = 0; this.keys = {}; this.sprites = {}; this.labels = {};
+    this.canvasRef = el => { this.cv = el; if (el) { this.ctx = el.getContext('2d'); } };
+  }
+
+  componentDidMount() {
+    import(new URL('lpa-go-music.js', document.baseURI).href).then(MU => {
+      this.music = MU.createMusic({ prefetch: ['night', 'morning', 'library', 'notebook', 'lawfirm', 'kopitiam'] });
+      this.unsubMusic = this.music.subscribe(m => { const v = { on: m.on, running: m.running }, o = this.state.mus; if (!o || o.on !== v.on || o.running !== v.running) this.setState({ mus: v }); });
+    }).catch(e => console.error('music failed', e));
+    import(new URL('lpa-go-art.js', document.baseURI).href).then(A => { this.A = A; this.build(); this.setState({ ready: true }); this.loop(); }).catch(e => console.error('art failed', e));
+    this.kd = e => this.onKey(e, true); this.ku = e => this.onKey(e, false);
+    window.addEventListener('keydown', this.kd); window.addEventListener('keyup', this.ku);
+    this.tick = setInterval(() => {
+      const s = this.state;
+      if (s.room === 'live' && (this.props.liveRoom ?? true)) {
+        this.floatEmoji(pick(['👏', '🙏', '💛', '🫂']));
+        if (Math.random() < 0.35) this.setState(st => ({ live: { ...st.live, metoo: st.live.metoo + 1, watching: st.live.watching + (Math.random() < 0.5 ? 1 : -1) } }));
+      }
+      if (s.playing) this.setState(st => { const t = Math.min(100, st.playT + 4); return { playT: t, playing: t < 100 }; });
+    }, 900);
+  }
+  musicTick() {
+    const M = this.music; if (!M) return;
+    const s = this.state, room = s.room;
+    M.set(room ? (ROOM_MUSIC[room] || 'night') : ((this.props.evening ?? true) ? 'night' : 'morning'), { duck: !!(s.sheet || s.dlg || room === 'live') });
+  }
+  componentWillUnmount() { if (this.music) this.music.set(null); if (this.unsubMusic) this.unsubMusic(); cancelAnimationFrame(this.raf); clearInterval(this.tick); clearTimeout(this.toastT); window.removeEventListener('keydown', this.kd); window.removeEventListener('keyup', this.ku); }
+
+  // ---------- world ----------
+  build() {
+    const A = this.A, P = new A.Px(WW, WH), M = new A.Mask(WW, WH), O = A.O, T = 16;
+    const blk = (x, y, w, h) => M.rect(x, y, w, h);
+    const SP = 16, PD = 20;
+    const big = (fn, x, y, w, h, k, ...rest) => { const ox = Math.round(x - SP * k), oy = Math.round(y - PD * k); P.clip(ox, oy, Math.round((w + SP * 2) * k), Math.round((h + PD + 6) * k), () => fn(new A.ScaledPx(P, k, ox, oy), SP, PD, ...rest)); };
+    const tree = (x, y, k, sp) => { if (k && sp === 'palm') { x -= 3; y -= 9; k *= 1.25; } big(A.tree, x, y, 18, 26, k, sp, x * 31 + y * 17); };
+    const lamp = (x, y, k) => big(A.lamp, x, y, 10, 30, k);
+    const bench = (x, y) => A.bench(P, x, y), bush = (x, y, sp) => A.bush(P, x, y, sp);
+    const signed = (draw, sx, sy, sw, shh, label, bg, ink) => (Q, x, y) => { draw(Q, x, y); A.signBoard(Q, x + sx, y + sy, sw, shh, label, bg, ink); };
+    A.grass(P, 0, 0, WW, WH);
+    const pav = new A.Mask(WW, WH); pav.rect(508, 0, 852, WH); pav.draw(P, A.PAVE, '#a09c8c');
+    A.lawn(P, 720, 330, 358, 100); A.flowers(P, 722, 332, 354, 96, 14);
+    A.lawn(P, 1068, 442, 80, 82); A.flowers(P, 1070, 444, 76, 78, 5);
+    A.flowerbed(P, 740, 338, 26, 40); A.flowerbed(P, 1046, 338, 26, 40); A.flowerbed(P, 740, 386, 26, 40); A.flowerbed(P, 1046, 386, 26, 40);
+    A.roadV(P, 468, 0, 40, WH); A.roadH(P, 508, 176, 644, 32); A.roadV(P, 1152, 176, 36, 400); A.cross(P, 468, 176, 40, 32); A.cross(P, 1152, 176, 36, 32);
+    P.vl(468, 176, 32, '#5c606c'); P.vl(469, 176, 32, '#a8acb8'); P.hl(1152, 176, 36, '#5c606c'); P.hl(1152, 177, 36, '#a8acb8');
+    A.zebraH(P, 468, 224, 40, 32); A.zebraV(P, 688, 176, 12, 32); A.zebraV(P, 1000, 176, 12, 32); A.zebraH(P, 1152, 248, 36, 12); A.zebraH(P, 1152, 392, 36, 12);
+    const sand = new A.Mask(WW, WH);
+    [[0, 0, 100, WH], [192, 100, 148, 396], [136, 122, 60, 48], [100, 294, 96, 38], [336, 300, 132, 32], [136, 480, 262, 32], [372, 120, 30, 50], [372, 270, 30, 46], [1344, 0, 32, WH], [1272, 474, 48, 24]].forEach(r => sand.rect(...r));
+    sand.draw(P, A.SAND, '#c8ae70');
+    const sea = new A.Mask(WW, WH);
+    [[1376, 0, 64, WH], [1316, 478, 124, 98], [0, 0, 60, WH], [60, 0, 16, 74], [60, 126, 20, 132], [60, 308, 28, 84], [60, 428, 14, 148]].forEach(r => sea.rect(...r));
+    sea.draw(P, A.WATER, '#2c68b8'); if (sea.rim) sea.rim(P, '#e4d8a8');
+    for (let y = 0; y < WH; y++) for (let x = 0; x < WW; x++) if (sea.at(x, y)) M.m[y * WW + x] = 1;
+    const clear = (x, y, w, hh) => { for (let j = y; j < y + hh; j++) for (let i = x; i < x + w; i++) M.m[j * WW + i] = 0; };
+    A.pier(P, 1284, 496, 140, 32); A.railH(P, 1284, 492, 140); A.railV(P, 1420, 492, 36); clear(1290, 498, 128, 30);
+    A.boat(P, 1400, 46); A.boat(P, 1386, 336); A.rock(P, 1362, 120); A.rock(P, 1382, 220);
+    A.pier(P, 20, 318, 84, 50); A.railH(P, 20, 314, 84); A.railH(P, 20, 368, 84); A.railV(P, 16, 314, 58); clear(22, 320, 80, 46);
+    A.boat(P, 8, 404); A.boat(P, 22, 48); A.boat(P, 28, 220); A.rock(P, 72, 112); A.rock(P, 80, 264); A.rock(P, 62, 482);
+    // kampung: houses round a sand square; the notice board sits in the middle
+    A.plots(P, 200, 36, 128, 48); A.fenceH(P, 200, 84, 128); A.fenceV(P, 197, 36, 50); A.fenceV(P, 328, 36, 50);
+    [[104, 40, A.HP2], [344, 40, A.HP3], [100, 218, A.HP4], [344, 190, A.HP1], [104, 396, A.HP3], [344, 392, A.HP2]].forEach(([x, y, hp]) => { big(A.house, x, y, 56, 58, 1.5, hp); blk(x, y + 4, 84, 80); });
+    big(A.bigTree, 274, 148, 22, 34, 1.5); big(A.well, 200, 256, 16, 22, 2.2); big(A.chess, 276, 266, 12, 14, 2.2); big(A.coop, 196, 202, 24, 20, 1.6); big(A.clothesline, 250, 298, 68, 22, 1.4, 68);
+    lamp(316, 342, 1.4); lamp(176, 348, 1.4); bench(140, 336);
+    [[240, 246], [218, 258], [262, 344], [292, 352], [200, 366], [316, 302]].forEach(([x, y], i) => A.chicken(P, x, y, i % 2));
+    P.box(208, 384, 120, 72, '#f8f8f0'); P.hl(208, 402, 120, '#f8f8f0'); P.hl(208, 438, 120, '#f8f8f0');
+    for (let y = 386; y < 456; y += 2) P.p(268, y, '#8890a0'); P.r(267, 381, 3, 4, '#505868'); P.r(267, 456, 3, 4, '#505868');
+    [[200, 100, 'bloom'], [296, 98, 'bloom'], [152, 176, 'round'], [352, 136, 'round'], [396, 136, 'palm'], [344, 340, 'round'], [396, 340, 'palm'], [400, 496, 'round'], [84, 170, 'palm'], [104, 348, 'palm'], [70, 440, 'palm'], [108, 496, 'palm']].forEach(([x, y, sp]) => tree(x, y, 1.4, sp));
+    [44, 108, 172, 236, 352, 416, 480].forEach(y => tree(436, y, 1.4, 'round'));
+    [[110, 126], [124, 126], [348, 126], [362, 126], [106, 304], [120, 304], [348, 276], [362, 276], [110, 482], [124, 482], [348, 478], [362, 478]].forEach(([x, y]) => bush(x, y, 'hibiscus'));
+    // heartland: decorative frontages keep their own signs
+    big(A.hdb, 844, 26, 48, 76, 1.4, 48, 8, A.HB1); blk(844, 34, 67, 96);
+    big(A.hdb, 936, 28, 52, 90, 1.3, 52, 10, A.HB2); blk(936, 36, 68, 106);
+    A.carpark(P, 1032, 40, 116, 64, 'w');
+    big(A.hawker, 874, 240, 96, 48, 1.4); blk(874, 248, 134, 56);
+    big(A.mrtExit, 1024, 232, 24, 22, 1.8); blk(1024, 248, 44, 26);
+    big(A.busStop, 1088, 224, 40, 26, 1.3); blk(1088, 234, 52, 18);
+    A.playgroundLot(P, 524, 328);
+    bench(690, 330); bench(690, 428); A.bin(P, 704, 332);
+    big(A.fountain, 860, 346, 32, 36, 1.8); blk(864, 352, 50, 56);
+    big(A.hdb, 520, 442, 48, 62, 1.35, 48, 6, A.HB3); blk(520, 450, 65, 73);
+    [3, 1, 4].forEach((s, i) => big(A.shophouse, 800 + i * 36, 448, 24, 40, 1.5, A.SH[s])); blk(800, 456, 108, 52);
+    A.cooler(P, 772, 346); A.bin(P, 1030, 346);
+    bench(770, 404); bench(1010, 404); bench(1096, 462);
+    [[684, 44], [820, 44], [920, 44], [1016, 44], [676, 248], [836, 248], [1076, 248], [1092, 300], [1088, 352], [760, 462], [936, 462], [620, 300]].forEach(([x, y]) => lamp(x, y, 1.4));
+    [[560, 140], [640, 140], [788, 140], [1016, 140], [1096, 140], [668, 206], [836, 206]].forEach(([x, y]) => tree(x, y, 1.4, 'rain'));
+    tree(668, 360, 1.4, 'bloom');
+    [[600, 462], [1120, 330], [1120, 462]].forEach(([x, y]) => tree(x, y, 1.4, 'round'));
+    [[528, 142], [542, 142], [700, 142], [714, 142], [900, 142], [914, 142]].forEach(([x, y]) => bush(x, y, 'hedge'));
+    [[752, 432], [766, 432], [930, 432], [944, 432]].forEach(([x, y]) => bush(x, y, 'round'));
+    bush(1090, 536, 'fern'); bush(1104, 536, 'fern');
+    // east: the old school and field become a quiet garden
+    big(A.schoolBlock, 1208, 30, 96, 88, 1.3); blk(1200, 40, 136, 102);
+    A.lawn(P, 1206, 214, 114, 176); A.flowers(P, 1208, 216, 110, 172, 12); A.flowerbed(P, 1222, 232, 26, 40); A.flowerbed(P, 1278, 232, 26, 40);
+    A.pond ? (A.pond(P, 1262, 330, 30, 18), blk(1228, 308, 70, 44)) : 0;
+    bench(1214, 288); bench(1286, 288); tree(1214, 392, 1.4, 'bloom'); tree(1296, 392, 1.4, 'bloom');
+    lamp(1192, 240, 1.4); tree(1192, 480, 1.4, 'round'); bench(1220, 478); A.bin(P, 1254, 478);
+    [152, 236, 348].forEach(y => tree(1326, y, 1.4, 'palm'));
+    bush(1268, 480, 'fern'); bush(1282, 480, 'fern'); bush(1192, 168, 'hedge'); bush(1206, 168, 'hedge');
+    // the village's working buildings
+    const draws = {
+      live: signed(A.cc, 26, 14, 60, 9, 'MAIN HALL', '#c84040', '#f8f0e8'),
+      signal: (Q, x, y) => { A.boutiqueShop(Q, x, y); A.signBoard(Q, x + 8, y + 1, 56, 7, 'SIGNAL TOWER', '#5a3a8a', '#f4eeff'); Q.r(x + 62, y - 18, 2, 14, '#6d757f'); Q.vl(x + 62, y - 18, 14, O); Q.r(x + 58, y - 14, 10, 1, '#6d757f'); Q.r(x + 59, y - 10, 8, 1, '#6d757f'); },
+      quiz: signed(A.kopitiam, 13, 13, 54, 9, 'FACT OR FEAR', '#c86a28', '#fff4e0'),
+      help: signed(A.mart, 5, 1, 50, 7, 'HELP DESK', '#1f8f80', '#f0f8f4'),
+      library: signed(A.mart, 3, 1, 54, 7, 'STORY LIBRARY', '#2f5490', '#f8f0d8'),
+      assoc: signed(A.sportsHall, 7, 17, 50, 8, 'CHAMBERS', '#8a5c34', '#fff0e8')
+    };
+    PLACES.forEach(pl => {
+      if (draws[pl.id]) big(draws[pl.id], pl.x, pl.y, pl.nw, pl.nh, pl.k);
+      if (pl.kind === 'board') { big(A.board, pl.x, pl.y, 20, 12, 2.4); A.signBoard(P, pl.x + 6, pl.y - 10, 36, 8, 'NOTICES', '#8a5a30', '#f8f0d8'); }
+      if (pl.kind === 'box') {
+        const { x, y } = pl;
+        P.r(x + 4, y + 6, 2, 20, '#8a5a30'); A.signBoard(P, x - 6, y - 4, 32, 8, 'IDEAS', '#4c78b8', '#f4f8ff');
+        P.r(x + 6, y + 10, 14, 18, '#d84848'); P.box(x + 6, y + 10, 14, 18, O); P.hl(x + 7, y + 11, 12, '#ee7a6a'); P.r(x + 9, y + 14, 8, 2, O); P.r(x + 8, y + 28, 10, 2, '#6d757f');
+      }
+      M.rect(...pl.bb);
+      const [dx, dy] = pl.door, mx = dx - 6, my = dy - 6; P.r(mx, my, 12, 7, '#c8a050'); P.box(mx, my, 12, 7, O); P.hl(mx + 2, my + 2, 8, '#e8c878');
+    });
+    A.forestRow(P, -10, 80, 468); A.forestRow(P, 4, 80, 468); A.forestRow(P, -10, 508, 1360); A.forestRow(P, 4, 508, 1360);
+    A.forestRow(P, 542, 80, 468); A.forestRow(P, 556, 80, 468); A.forestRow(P, 542, 508, 1152); A.forestRow(P, 556, 508, 1152);
+    A.forestRow(P, 542, 1188, 1324); A.forestRow(P, 556, 1188, 1324);
+    blk(0, 0, WW, 28); blk(0, 540, WW, 36);
+    this.bg = P.c; this.mask = M;
+    this.lanternPos = Array.from({ length: 12 }, (_, i) => { const a = -Math.PI / 2 + (i + 0.5) * Math.PI * 2 / 12; return [Math.round(889 + Math.cos(a) * 124), Math.round(382 + Math.sin(a) * 50)]; });
+    this.icons = {
+      exc: this.stampIcon(EXC, { Y: '#f8d060' }, 7, 11),
+      lanOn: this.stampIcon(LAN, { R: '#e04848', Y: '#fff0a0' }, 5, 7),
+      lanOff: this.stampIcon(LAN, { R: '#6a3a3a', Y: '#8a7050' }, 5, 7),
+      live: this.textTag('LIVE', '#c84040', '#ffffff')
+    };
+    const pl = { x: 880, y: 430, dir: 'u', anim: 0 }; this.pl = pl;
+    const ents = [];
+    SENIORS.forEach((s, i) => ents.push({ kind: 'senior', info: s, d: A.CHARS[s.name], x: 760 + i * 110, y: 330 + (i % 2) * 90, dir: 'd', anim: 0, wait: rnd(30, 200), spd: 0.55, zones: [ZONES[0], ZONES[1]] }));
+    ents.push({ kind: 'host', info: HOST, d: A.CHARS.danial, x: 620, y: 142, dir: 'd', anim: 0, fixed: true });
+    [['gekNeo', 896, 308, 'u'], ['weeKiat', 936, 308, 'u'], ['sarojini', 240, 282, 'r'], ['fauzi', 300, 270, 'l'], ['carol', 560, 400, 'd'], ['nadia', 1300, 506, 'u']].forEach(([n, x, y, dir]) => ents.push({ kind: 'local', d: A.CHARS[n], x, y, dir, anim: 0, fixed: true }));
+    const n = this.props.crowd ?? 14, bases = ['carol', 'nadia', 'fauzi', 'andy', 'meiLing', 'danial', 'suzanne', 'lisa'];
+    for (let i = 0; i < n; i++) {
+      const b = A.CHARS[bases[i % bases.length]], z = pick(ZONES);
+      ents.push({ kind: 'junior', label: handle(), d: { ...b, shirt: pick(SHIRTS), cap: pick(SHIRTS), extra: 'lanyard', style: b.style === 'bald' ? 'short' : b.style }, x: rnd(z[0], z[0] + z[2]), y: rnd(z[1], z[1] + z[3]), dir: 'd', anim: 0, wait: rnd(0, 120), spd: rnd(0.6, 0.9), zones: ZONES });
+    }
+    ents.forEach(e => { let k = 0; while (this.blocked(e.x + 8, e.y + 15) && k++ < 60) { const z = ZONES[k % 2]; e.x = rnd(z[0], z[0] + z[2]); e.y = rnd(z[1], z[1] + z[3]); } });
+    this.ents = ents;
+    this.GW = WW / 8; this.GH = WH / 8; this.walk = new Uint8Array(this.GW * this.GH);
+    for (let j = 0; j < this.GH; j++) for (let i = 0; i < this.GW; i++) this.walk[j * this.GW + i] = this.blocked(i * 8 + 4, j * 8 + 4) ? 0 : 1;
+  }
+  path(fx, fy, tx, ty) {
+    const GW = this.GW, GH = this.GH, W = this.walk, cl = (v, m) => Math.max(0, Math.min(m - 1, v));
+    const s = cl(Math.floor(fy / 8), GH) * GW + cl(Math.floor(fx / 8), GW), g = cl(Math.floor(ty / 8), GH) * GW + cl(Math.floor(tx / 8), GW);
+    const prev = new Int32Array(GW * GH).fill(-1); prev[s] = s; const q = [s]; let found = s === g;
+    for (let qi = 0; qi < q.length && !found; qi++) {
+      const c = q[qi], ci = c % GW, cj = (c / GW) | 0;
+      for (const [di, dj] of [[1, 0], [-1, 0], [0, 1], [0, -1], [1, 1], [1, -1], [-1, 1], [-1, -1]]) {
+        const ni = ci + di, nj = cj + dj; if (ni < 0 || nj < 0 || ni >= GW || nj >= GH) continue;
+        const n = nj * GW + ni; if (prev[n] !== -1) continue;
+        if (n !== g && !W[n]) continue;
+        if (di && dj && (!W[cj * GW + ni] || !W[nj * GW + ci])) continue;
+        prev[n] = c; if (n === g) { found = true; break; } q.push(n);
+      }
+    }
+    if (!found) return null;
+    const pts = []; for (let c = g; c !== s; c = prev[c]) pts.unshift([(c % GW) * 8 + 4, ((c / GW) | 0) * 8 + 4]);
+    pts.pop(); pts.push([tx, ty]); return pts;
+  }
+  go(tx, ty, extra) {
+    const pl = this.pl, pts = this.path(pl.x + 8, pl.y + 15, tx, ty);
+    if (!pts) { this.target = null; return false; }
+    this.target = { x: tx, y: ty, pts, stuck: 0, ...(extra || {}) }; return true;
+  }
+  stampIcon(rows, pal, w, h) { const P = new this.A.Px(w, h); P.stamp(rows, pal, 0, 0); return P.c; }
+  textTag(t, bg, ink) { const A = this.A, w = A.tinyW(t) + 5, P = new A.Px(w, 9); A.signBoard(P, 0, 0, w, 9, t, bg, ink); return P.c; }
+  label(t, mine) { const k = t + (mine ? '*' : ''); if (this.labels[k]) return this.labels[k]; const A = this.A, w = A.tinyW(t) + 4, P = new A.Px(w, 8); P.r(0, 0, w, 8, mine ? '#b68235' : 'rgba(28,30,44,0.72)'); A.tiny(P, 2, 1, t, mine ? '#fff8e8' : '#ece4d6'); return this.labels[k] = P.c; }
+  sprite(d) {
+    const key = JSON.stringify(d); if (this.sprites[key]) return this.sprites[key];
+    const A = this.A, rows = A.charRows(d).map(s => s.split('')), pal = A.charPal(d);
+    const build = rs => { const P = new A.Px(16, 24); P.stamp(rs.map(a => a.join('')), pal, 0, 0); return P.c; };
+    const strip = rs => { const c = rs.map(a => a.slice()); for (let y = 22; y < 24; y++) for (let x = 0; x < 8; x++) c[y][x] = '.'; return c; };
+    const back = rows.map(a => a.slice()); for (let y = 7; y <= 11; y++) for (let x = 0; x < 16; x++) if ('swem'.includes(back[y][x])) back[y][x] = 'H';
+    const f0 = build(rows);
+    const b64 = atob(f0.toDataURL().split(',')[1]), bytes = new Uint8Array(b64.length); for (let i = 0; i < b64.length; i++) bytes[i] = b64.charCodeAt(i);
+    const url = URL.createObjectURL(new Blob([bytes], { type: 'image/png' }));
+    return this.sprites[key] = { f0, f1: build(strip(rows)), b0: build(back), b1: build(strip(back)), url };
+  }
+  blocked(fx, fy) { const M = this.mask; const a = Math.round(fx), b = Math.round(fy); return M.at(a - 5, b - 2) || M.at(a + 5, b - 2) || M.at(a - 5, b + 1) || M.at(a + 5, b + 1); }
+  step(e, dx, dy) {
+    let moved = false;
+    if (dx && !this.blocked(e.x + dx + 8, e.y + 15)) { e.x += dx; moved = true; }
+    if (dy && !this.blocked(e.x + 8, e.y + dy + 15)) { e.y += dy; moved = true; }
+    if (dx || dy) e.dir = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'r' : 'l') : (dy < 0 ? 'u' : 'd');
+    return moved;
+  }
+  onKey(e, down) {
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+    const k = e.key.toLowerCase();
+    if (down && k === 'escape') { if (this.state.sheet) this.setState({ sheet: false }); else if (this.state.room && this.state.room !== 'welcome') this.closeRoom(); else if (this.state.dlg) this.setState({ dlg: null }); return; }
+    if (this.state.room || this.state.sheet) { this.keys = {}; return; }
+    const map = { arrowup: 'u', w: 'u', arrowdown: 'd', s: 'd', arrowleft: 'l', a: 'l', arrowright: 'r', d: 'r', shift: 'sh' };
+    if (map[k]) { this.keys[map[k]] = down; if (k.startsWith('arrow')) e.preventDefault(); if (down) { this.target = null; if (this.state.dlg) this.setState({ dlg: null }); } }
+    if (down && (k === 'e' || k === 'enter' || k === ' ')) { e.preventDefault(); this.interact(); }
+  }
+  interact() {
+    const n = this.near; if (!n) return;
+    if (n.place) this.openRoom(n.place.id);
+    else if (n.ent) this.talk(n.ent);
+  }
+  talk(ent) {
+    const pl = this.pl; ent.dir = pl.x < ent.x ? 'l' : pl.x > ent.x ? 'r' : (pl.y < ent.y ? 'u' : 'd'); ent.wait = 400; ent.tx = null;
+    const i = ent.info;
+    this.setState({ dlg: { role: i.role, line: i.line, goLabel: i.goLabel, story: i.story, room: i.room, img: this.sprite(ent.d).url } });
+  }
+  openRoom(id) { this.keys = {}; this.target = null; const ex = id === 'library' ? { story: null, playing: false } : {}; this.setState({ room: id, dlg: null, ...ex }); }
+  closeRoom() { this.setState({ room: null, playing: false }); }
+  walkTo(id) { const pl = PLACES.find(x => x.id === id); if (!pl) return; this.setState({ room: null, dlg: null }); if (!this.A || !this.go(pl.door[0], pl.door[1], { enter: id })) this.openRoom(id); }
+  canvasClick(e) {
+    if (!this.A || this.state.room) return;
+    const r = this.cv.getBoundingClientRect(), k = Math.max(r.width / (VW * 2), r.height / (VH * 2)), ox = (r.width - VW * 2 * k) / 2, oy = (r.height - VH * 2 * k) / 2;
+    const wx = (e.clientX - r.left - ox) / k / 2 + this.camX, wy = (e.clientY - r.top - oy) / k / 2 + this.camY;
+    const pl = PLACES.find(p => { const [x, y, w, h] = p.bb; return wx >= x && wx <= x + w && wy >= y && wy <= y + h + 10; });
+    if (pl) { if (!this.go(pl.door[0], pl.door[1], { enter: pl.id })) this.openRoom(pl.id); return; }
+    const ent = this.ents.find(n => (n.kind === 'senior' || n.kind === 'host') && Math.abs(n.x + 8 - wx) < 10 && wy > n.y - 8 && wy < n.y + 16);
+    if (ent) { this.go(ent.x + 8, ent.y + 24, { talk: ent }); return; }
+    this.go(wx, wy);
+    if (this.state.dlg) this.setState({ dlg: null });
+  }
+  update(f) {
+    const pl = this.pl, k = this.keys, paused = !!(this.state.room || this.state.sheet);
+    let ix = 0, iy = 0;
+    if (!paused) {
+      ix = (k.r ? 1 : 0) - (k.l ? 1 : 0); iy = (k.d ? 1 : 0) - (k.u ? 1 : 0);
+      const t = this.target;
+      if (!ix && !iy && t) {
+        const fx = pl.x + 8, fy = pl.y + 15;
+        const fd = Math.hypot(t.x - fx, t.y - fy);
+        if (fd < (t.talk ? 14 : 3)) { this.target = null; if (t.enter) this.openRoom(t.enter); if (t.talk) this.talk(t.talk); }
+        else {
+          while (t.pts.length > 1 && Math.hypot(t.pts[0][0] - fx, t.pts[0][1] - fy) < 4) t.pts.shift();
+          const [wx, wy] = t.pts[0], dx = wx - fx, dy = wy - fy, d = Math.hypot(dx, dy) || 1;
+          ix = dx / d; iy = dy / d;
+        }
+      }
+      if (ix && iy && !this.target) { ix *= 0.7071; iy *= 0.7071; }
+    }
+    const sp = (k.sh ? 2 : 1.25) * f;
+    let moved = false;
+    if (ix || iy) { moved = this.step(pl, ix * sp, iy * sp); if (this.target && !moved && ++this.target.stuck > 40) { const t = this.target; this.target = null; if (t.enter) this.openRoom(t.enter); } }
+    pl.moving = moved; if (moved) pl.anim += 0.12 * f * (k.sh ? 1.5 : 1);
+    for (const e of this.ents) {
+      if (e.fixed) continue;
+      if (e.hidden > 0) { e.hidden -= f; if (e.hidden <= 0) { e.x = e.home[0] - 8; e.y = e.home[1] - 15; e.dir = 'd'; } continue; }
+      if (e.wait > 0) { e.wait -= f; e.moving = false; continue; }
+      if (e.tx == null) {
+        if (e.kind === 'junior' && Math.random() < 0.3) { const d = pick(PLACES.slice(0, 6)).door; e.tx = d[0]; e.ty = d[1]; e.door = d; }
+        else { const z = pick(e.zones || ZONES); e.tx = rnd(z[0], z[0] + z[2]); e.ty = rnd(z[1], z[1] + z[3]); e.door = null; }
+        e.stuck = 0;
+      }
+      const dx = e.tx - (e.x + 8), dy = e.ty - (e.y + 15), d = Math.hypot(dx, dy);
+      if (d < 2) { e.tx = null; e.wait = rnd(60, 260); if (e.door) { e.hidden = rnd(200, 420); e.home = e.door; } continue; }
+      const m = this.step(e, dx / d * e.spd * f, dy / d * e.spd * f); e.moving = m;
+      if (m) e.anim += 0.09 * f; else if (++e.stuck > 30) { e.tx = null; e.wait = rnd(20, 80); }
+    }
+    // proximity
+    let near = null;
+    if (!paused) {
+      const fx = pl.x + 8, fy = pl.y + 15;
+      for (const p of PLACES) if (Math.hypot(p.door[0] - fx, p.door[1] - fy) < 20) { near = { place: p }; break; }
+      if (!near) for (const e of this.ents) if ((e.kind === 'senior' || e.kind === 'host') && !e.hidden && Math.hypot(e.x - pl.x, e.y - pl.y) < 22) { near = { ent: e }; break; }
+    }
+    this.near = near;
+    const prompt = near ? (near.place ? `E · Enter ${near.place.n} — ${near.place.s}` : `E · Talk to ${near.ent.info.role}`) : 'Walk around the square. Doors with a gold mark are new.';
+    if (prompt !== this.state.prompt) this.setState({ prompt, promptHot: !!near });
+  }
+  draw(now) {
+    const ctx = this.ctx; if (!ctx) return;
+    const pl = this.pl;
+    const camX = this.camX = Math.max(0, Math.min(WW - VW, Math.round(pl.x + 8 - VW / 2)));
+    const camY = this.camY = Math.max(0, Math.min(WH - VH, Math.round(pl.y + 8 - VH / 2)));
+    ctx.setTransform(2, 0, 0, 2, 0, 0); ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(this.bg, camX, camY, VW, VH, 0, 0, VW, VH);
+    const lit = this.litCount();
+    const O = this.A.O;
+    this.lanternPos.forEach(([x, y]) => { const sx = x - camX, sy = y - camY; ctx.fillStyle = O; ctx.fillRect(sx - 1, sy + 4, 3, 10); ctx.fillStyle = '#6d757f'; ctx.fillRect(sx, sy + 4, 1, 9); ctx.fillStyle = 'rgba(30,30,50,0.28)'; ctx.fillRect(sx - 2, sy + 13, 5, 1); });
+    const p = this.state.p, me = this.sprite(charDef(p));
+    const list = [{ spr: me, x: pl.x, y: pl.y, dir: pl.dir, anim: pl.moving ? pl.anim : 0, lab: this.label(p.handle.toUpperCase(), true), mine: true, ord: -1 }];
+    this.ents.forEach((e, i) => { if (!(e.hidden > 0)) list.push({ spr: this.sprite(e.d), x: e.x, y: e.y, dir: e.dir, anim: e.moving ? e.anim : 0, lab: e.kind === 'junior' ? this.label(e.label.toUpperCase()) : null, senior: e.kind === 'senior' || e.kind === 'host', e, ord: i }); });
+    list.sort((a, b) => a.y - b.y);
+    const bob = Math.floor(now / 450) % 2 ? 0 : -1, tags = [];
+    for (const e of list) {
+      const fr = Math.floor(e.anim) % 2 ? 1 : 0, img = e.dir === 'u' ? e.spr['b' + fr] : e.spr['f' + fr];
+      const sx = Math.round(e.x - camX), sy = Math.round(e.y - camY - 8);
+      ctx.fillStyle = 'rgba(30,30,50,0.28)'; ctx.fillRect(sx + 3, Math.round(e.y - camY) + 14, 10, 2);
+      if (e.dir === 'l') { ctx.save(); ctx.translate(sx + 16, sy); ctx.scale(-1, 1); ctx.drawImage(img, 0, 0); ctx.restore(); } else ctx.drawImage(img, sx, sy);
+      if (e.senior) tags.push({ img: this.icons.exc, x: sx + 5, y: sy - 13 + bob, pri: 1, ord: e.ord });
+      else if (e.lab) tags.push({ img: e.lab, x: sx + 8 - (e.lab.width >> 1), y: sy - 10, pri: e.mine ? 2 : 0, ord: e.ord });
+    }
+    // name tags go on top of every sprite; a junior's tag is skipped while it would cover another tag
+    tags.sort((a, b) => b.pri - a.pri || a.ord - b.ord);
+    const placed = [], hit = t => placed.some(r => t.x < r.x + r.img.width + 2 && t.x + t.img.width + 2 > r.x && t.y < r.y + r.img.height + 1 && t.y + t.img.height + 1 > r.y);
+    for (const t of tags) if (t.pri || !hit(t)) placed.push(t);
+    for (let i = placed.length - 1; i >= 0; i--) ctx.drawImage(placed[i].img, placed[i].x, placed[i].y);
+    PLACES.forEach(pp => {
+      const done = this.placeDone(pp), dx = pp.door[0] - camX, dy = pp.door[1] - camY;
+      if (pp.id === 'live') ctx.drawImage(this.icons.live, pp.door[0] - (this.icons.live.width >> 1) - camX, pp.y - 4 - camY + bob);
+      if (!done && pp.stamp) ctx.drawImage(this.icons.exc, Math.round(dx - 3), Math.round(dy - 30 + bob));
+    });
+    if (this.props.evening ?? true) { ctx.fillStyle = 'rgba(34,26,78,0.26)'; ctx.fillRect(0, 0, VW, VH); }
+    ctx.globalCompositeOperation = 'screen';
+    const fl = now / 300;
+    this.lanternPos.forEach(([x, y], i) => {
+      if (i >= lit) return; const sx = x - camX, sy = y - camY + 2, r = 20 + Math.sin(fl + i) * 1.5;
+      const g = ctx.createRadialGradient(sx, sy, 1, sx, sy, r); g.addColorStop(0, 'rgba(255,196,110,0.6)'); g.addColorStop(1, 'rgba(255,196,110,0)'); ctx.fillStyle = g; ctx.fillRect(sx - r, sy - r, r * 2, r * 2);
+    });
+    PLACES.forEach(pp => { if (!this.placeDone(pp)) return; const sx = pp.door[0] - camX, sy = pp.door[1] - camY - 10, g = ctx.createRadialGradient(sx, sy, 1, sx, sy, 26); g.addColorStop(0, 'rgba(255,200,110,0.4)'); g.addColorStop(1, 'rgba(255,200,110,0)'); ctx.fillStyle = g; ctx.fillRect(sx - 26, sy - 26, 52, 52); });
+    ctx.globalCompositeOperation = 'source-over';
+    this.lanternPos.forEach(([x, y], i) => ctx.drawImage(i < lit ? this.icons.lanOn : this.icons.lanOff, x - camX - 2, y - camY - 2));
+    const sig = PLACES.find(x => x.id === 'signal'); if (Math.floor(now / 600) % 2) { ctx.fillStyle = '#ff5a4a'; ctx.fillRect(Math.round(sig.x + 62 * 1.5) - 1 - camX, Math.round(sig.y - 20 * 1.5) - camY, 5, 3); }
+    if (this.target && !this.target.talk) { const tx = Math.round(this.target.x - camX), ty = Math.round(this.target.y - camY); ctx.fillStyle = '#f8d060'; ctx.fillRect(tx - 3, ty, 7, 1); ctx.fillRect(tx, ty - 3, 1, 7); }
+  }
+  loop() {
+    let last = performance.now();
+    const fr = now => { const f = Math.min(3, (now - last) / 16.67); last = now; try { this.update(f); this.draw(now); this.musicTick(); } catch (e) { console.error('frame skipped', e); } this.raf = requestAnimationFrame(fr); };
+    this.raf = requestAnimationFrame(fr);
+  }
+  placeDone(pp) { const st = this.state.p.stamps; if (pp.stamp === 'stories') return ['s1', 's2', 's3'].every(x => st.includes(x)); return pp.stamp ? st.includes(pp.stamp) : false; }
+  litCount() { return Math.min(12, 7 + Math.ceil(this.state.p.stamps.length * 0.6)); }
+
+  // ---------- app ----------
+  save(patch) { const p = { ...this.state.p, ...patch }; this.setState({ p }); try { localStorage.setItem(KEY, JSON.stringify(p)); } catch (e) {} }
+  say(t) { clearTimeout(this.toastT); this.setState({ toast: t }); this.toastT = setTimeout(() => this.setState({ toast: null }), 2200); }
+  stamp(id) { const p = this.state.p; if (p.stamps.includes(id)) return; this.save({ stamps: [...p.stamps, id] }); this.say('Stamp added to your passport · a lantern lights up'); if (this.music) this.music.sting('card'); }
+  floatEmoji(e) {
+    const id = ++this.fid, x = 8 + Math.random() * 78;
+    this.setState(s => ({ live: { ...s.live, floats: [...s.live.floats, { id, e, x }].slice(-14) } }));
+    setTimeout(() => this.setState(s => ({ live: { ...s.live, floats: s.live.floats.filter(f => f.id !== id) } })), 2500);
+  }
+  sel(on) { return { br: on ? 'var(--color-accent)' : 'var(--color-divider)', bg: on ? 'var(--color-accent-100)' : 'transparent' }; }
+
+  renderVals() {
+    const s = this.state, p = s.p, set = o => this.setState(o), room = s.room;
+    const has = id => p.stamps.includes(id);
+    const stampCount = p.stamps.length, heardAll = ['s1', 's2', 's3'].every(has);
+    const litCount = this.litCount();
+    const npcImg = name => (this.A ? this.sprite(this.A.CHARS[name]).url : '');
+    const avUrl = this.A ? this.sprite(charDef(p)).url : '';
+
+    const L = s.live, total = L.counts.reduce((a, b) => a + b, 0);
+    const poll = ['Time', 'Career risk', 'Not knowing how', 'Not sure I need it'].map((t, i) => ({
+      t, br: L.poll === i ? 'var(--color-accent)' : 'var(--color-divider)',
+      w: L.poll == null ? '0%' : Math.round(L.counts[i] / total * 100) + '%', pct: L.poll == null ? '' : Math.round(L.counts[i] / total * 100) + '%',
+      go: () => { if (L.poll != null) return; const counts = L.counts.slice(); counts[i]++; set({ live: { ...L, poll: i, counts } }); }
+    }));
+    const floatLayer = React.createElement('div', { style: { position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' } },
+      L.floats.map(f => React.createElement('span', { key: f.id, style: { position: 'absolute', left: f.x + '%', bottom: 8, fontSize: 22, animation: 'lpaFloat 2.4s ease-out forwards' } }, f.e)));
+    const stLabel = { live: ['Shown to the room', 'var(--color-neutral-700)'], pending: ['With YLC moderators', 'var(--color-accent-700)'], held: ['Held: moderator will remove names', '#8a3628'] };
+    const questions = s.qs.slice().sort((a, b) => b.v - a.v).map(q => ({
+      t: q.t, v: q.v, br: q.voted ? 'var(--color-accent)' : 'var(--color-divider)', st: (q.mine ? 'Yours · ' : '') + stLabel[q.st][0], stInk: stLabel[q.st][1],
+      vote: () => set({ qs: s.qs.map(x => x.id === q.id ? { ...x, voted: !x.voted, v: x.v + (x.voted ? -1 : 1) } : x) })
+    }));
+    const sendQ = () => {
+      const t = s.qDraft.trim(); if (!t) return;
+      const rest = t.replace(/^\S+\s*/, '');
+      const hit = FLAG.find(([re], i) => re.test(i === 1 ? rest : t));
+      const id = Date.now();
+      set({ qDraft: '', qs: [...s.qs, { id, t, v: 1, voted: true, mine: true, st: hit ? 'held' : 'pending' }], mod: hit ? 'Flagged ' + hit[1] + '. A YLC moderator will remove it before anyone sees the question.' : 'Sent to YLC moderators. It appears once approved.' });
+      if (!hit) setTimeout(() => this.setState(st => ({ qs: st.qs.map(x => x.id === id ? { ...x, st: 'live' } : x), mod: null })), 2600);
+    };
+
+    const st0 = STORIES.find(x => x.id === s.story) || STORIES[0], st = { ...st0, img: npcImg(st0.npc) }, stMine = p.metoo.includes(st.id);
+
+    const A = s.ag, sc = SCENES[Math.min(A.i, SCENES.length - 1)];
+    const helpN = A.picks.reduce((a, c) => a + c, 0), end = ENDINGS.find(e => helpN <= e.max), endSt0 = STORIES.find(x => x.id === end.story);
+    const selC = A.sel != null ? sc.ch[A.sel] : null;
+    const agChoices = sc.ch.map((c, i) => ({
+      t: c.t, pct: c.pct + '%', w: c.pct + '%', barOn: A.sel != null ? 'flex' : 'none',
+      br: A.sel === i ? 'var(--color-accent)' : 'var(--color-neutral-900)', bg: A.sel === i ? 'var(--color-accent-100)' : 'transparent', op: A.sel == null || A.sel === i ? 1 : 0.6,
+      go: () => { if (A.sel == null) set({ ag: { ...A, sel: i } }); }
+    }));
+
+    const Q = s.qz, qz = QUIZ[Math.min(Q.i, QUIZ.length - 1)];
+    const answer = a => { if (Q.sel) return; if (this.music) this.music.sting(a === qz.a ? 'good' : 'okay'); set({ qz: { ...Q, sel: a, score: Q.score + (a === qz.a ? 1 : 0), dx: a === 'fact' ? 26 : -26, drag: false } }); };
+    const correct = Q.sel && Q.sel === qz.a;
+
+    const G = s.sg, sg = SIGNALS[Math.min(G.i, SIGNALS.length - 1)];
+    const sgOpts = sg.opts.map((t, i) => { const rv = G.sel != null, isA = i === sg.a, isS = i === G.sel; return { t, bw: rv && (isA || isS) ? '2px' : '1px', br: rv && isA ? 'var(--color-accent)' : rv && isS ? '#a94436' : 'var(--color-divider)', bg: rv && isA ? 'var(--color-accent-100)' : 'transparent', go: () => { if (G.sel != null) return; set({ sg: { ...G, sel: i } }); if (this.music) this.music.sting(i === sg.a ? 'good' : 'okay'); } }; });
+
+    const pd = s.pd;
+    const pulseQs = PULSE_Q.map(q => ({ t: q.t, endsOn: q.ends ? 'flex' : 'none', opts: q.opts.map(o => ({ t: o, ...this.sel(pd[q.k] === o), go: () => set({ pd: { ...pd, [q.k]: o } }) })) }));
+    const fmt = v => v ? `risk ${v.risk} · knows ${v.know} · consider ${v.consider}` : 'Not yet';
+    const finishOb = () => { this.save({ onboarded: true }); set({ room: null }); this.say('Welcome, ' + p.handle); };
+    const opt = (key, val) => ({ t: val, ...this.sel(p[key] === val), go: () => this.save({ [key]: p[key] === val ? null : val }) });
+    const meta = ROOM_META[room] || ['', ''];
+    const roomTitle = room === 'pulse' ? (s.pulseMode === 'pre' ? 'Before the townhall' : 'After the townhall') : room === 'library' && s.story ? 'Story' : meta[1];
+
+    return {
+      p, canvasRef: this.canvasRef, canvasClick: e => this.canvasClick(e),
+      litCount, stampCount, helpCount: 312 + (has('help') ? 1 : 0),
+      prompt: s.ready ? s.prompt : 'Loading the village…', promptInk: s.promptHot ? 'var(--color-accent-800)' : 'var(--color-neutral-700)',
+      lanterns: Array.from({ length: 12 }, (_, i) => i < litCount ? { bg: '#f8d060', glow: '0 0 8px 1px rgba(248,208,96,0.6)' } : { bg: '#c6cbd6', glow: 'none' }),
+      avUrl, avOn: avUrl ? 'block' : 'none', imgsOn: !!this.A,
+      shirtOpts: SHIRTS.map((c, i) => ({ c, br: p.shirt === i ? INK : 'transparent', go: () => this.save({ shirt: i }) })),
+      skinOpts: SKINS.map((c, i) => ({ c, br: p.skin === i ? INK : 'transparent', go: () => this.save({ skin: i }) })),
+      styleOpts: STYLES.map(([, t], i) => ({ t, ...this.sel(p.style === i), go: () => this.save({ style: i }) })),
+      reroll: () => this.save({ handle: handle() }),
+      placeList: PLACES.map(pp => { const done = this.placeDone(pp); return { n: pp.n, s: pp.s, mark: done ? '✓' : '', bs: done ? 'solid' : 'dashed', br: done ? 'var(--color-accent)' : 'var(--color-neutral-400)', bg: done ? 'var(--color-accent-100)' : 'transparent', go: () => this.walkTo(pp.id) }; }),
+      badgeLine: heardAll ? 'Badge earned: Heard 3 journeys' : `Finish all 3 stories for the “Heard 3 journeys” badge`,
+      pulseRows: [{ k: 'Before', v: fmt(p.pulse.pre) }, { k: 'After', v: fmt(p.pulse.post) }, { k: 'Fact or Fear', v: `${p.quiz.pre ?? '—'} → ${p.quiz.post ?? '—'} of ${QUIZ.length}` }],
+      pulseLabel: p.pulse.pre ? (p.pulse.post ? 'Retake after-townhall pulse' : 'Take the after-townhall pulse') : 'Take the pulse',
+      openPulse: () => set({ room: 'pulse', pulseMode: p.pulse.pre ? 'post' : 'pre', pd: {} }),
+      wipe: () => { try { localStorage.removeItem(KEY); } catch (e) {} this.setState({ p: fresh(), room: 'welcome', qz: { i: 0, sel: null, score: 0, done: false, dx: 0, drag: false }, ag: { i: 0, picks: [], sel: null, end: false }, sg: { i: 0, sel: null, done: false }, hb: 0 }); },
+
+      dlgOn: !!s.dlg && !room, dlg: s.dlg || {}, dlgGoOn: s.dlg && (s.dlg.story || s.dlg.room) ? 'inline-flex' : 'none', closeDlg: () => set({ dlg: null }),
+      dlgGo: () => { const d = s.dlg; if (d.story) set({ room: 'library', story: d.story, dlg: null, playT: 0, playing: false }); else if (d.room) this.walkTo(d.room); },
+
+      musicLabel: !s.mus ? '…' : s.mus.on ? 'On' : 'Off', musicNow: s.mus && s.mus.on && !s.mus.running ? 'Starts on your first click or key press' : '',
+      toggleMusic: () => { if (this.music) this.music.toggle(); },
+      roomOn: !!room, leaveOn: room !== 'welcome', roomKicker: meta[0], roomTitle, closeRoom: () => { if (room === 'welcome') return; this.closeRoom(); },
+      rmLive: room === 'live', rmLibList: room === 'library' && !s.story, rmLibRead: room === 'library' && !!s.story, rmAssoc: room === 'assoc', rmQuiz: room === 'quiz', rmSignal: room === 'signal', rmHelp: room === 'help', rmNotice: room === 'notice', rmSuggest: room === 'suggest', rmPulse: room === 'pulse', rmWelcome: room === 'welcome',
+      goHelp: () => set({ room: 'help' }),
+
+      watching: L.watching, floatLayer, emojis: ['👏', '🙏', '💛', '🫂'].map(e => ({ e, go: () => this.floatEmoji(e) })),
+      meTooLabel: L.mine ? 'You said me too' : 'Me too', meTooCount: L.metoo, meTooBg: L.mine ? '#2c3040' : 'transparent', meTooInk: L.mine ? '#ece4d6' : 'var(--color-text)',
+      toggleMeToo: () => { const mine = !L.mine; set({ live: { ...L, mine, metoo: L.metoo + (mine ? 1 : -1) } }); if (mine) { this.floatEmoji('🫂'); this.stamp('live'); } },
+      poll, questions, qDraft: s.qDraft, setQDraft: e => set({ qDraft: e.target.value }), qKey: e => { if (e.key === 'Enter') sendQ(); }, sendQ, modOn: !!s.mod, modMsg: s.mod,
+      breakoutLabel: L.breakout ? 'You’ll be moved in at 9.30pm' : 'Join the small-firm breakout', toggleBreakout: () => set({ live: { ...L, breakout: !L.breakout } }),
+
+      storyCards: STORIES.map(x => ({ ...x, img: npcImg(x.npc), status: has(x.id) ? 'Stamped ✓' : 'Not yet heard', open: () => set({ story: x.id, playing: false, playT: has(x.id) ? 100 : 0 }) })),
+      backToList: () => set({ story: null, playing: false }), st, stMeBg: stMine ? 'var(--color-accent-100)' : 'transparent', stMeCount: st.base + (stMine ? 1 : 0),
+      storyMeToo: () => this.save({ metoo: stMine ? p.metoo.filter(x => x !== st.id) : [...p.metoo, st.id] }),
+      playIcon: s.playing ? '❚❚' : '▶', playPct: s.playT + '%', togglePlay: () => set({ playing: !s.playing, playT: s.playT >= 100 ? 0 : s.playT }),
+      finishLabel: has(st.id) ? 'Back to all stories' : 'Finish and collect stamp', finishStory: () => { this.stamp(st.id); set({ story: null, playing: false }); },
+
+      agPlaying: !A.end, agEnded: A.end, sc, agChoices, agProgress: `Scene ${A.i + 1} of ${SCENES.length}`,
+      agNoteOn: !!selC, agNote: selC ? selC.note : '', agNoteKicker: selC && selC.who ? 'Who sees what' : 'What happens',
+      agNextLabel: A.i + 1 >= SCENES.length ? 'See your ending' : 'Next scene',
+      agNext: () => { const picks = [...A.picks, selC.help]; if (A.i + 1 >= SCENES.length) { set({ ag: { ...A, picks, sel: null, end: true } }); this.stamp('assoc'); } else set({ ag: { i: A.i + 1, picks, sel: null, end: false } }); },
+      agEnd: end, agEndSt: { ...endSt0, img: npcImg(endSt0.npc) }, agEndStory: () => set({ room: 'library', story: end.story, playT: 0, playing: false }),
+      agRestart: () => set({ ag: { i: 0, picks: [], sel: null, end: false } }),
+
+      qzPlaying: !Q.done, qzDone: Q.done, qz, qzNum: Q.i + 1, qzProgress: `${Q.i + 1} of ${QUIZ.length}`,
+      qzDx: Q.dx, qzRot: Q.dx / 18, qzTrans: Q.drag ? 'none' : 'transform 0.25s ease-out',
+      qzCardBr: Q.sel ? (correct ? 'var(--color-accent)' : '#a94436') : Q.dx > 40 ? 'var(--color-accent)' : Q.dx < -40 ? '#a94436' : 'var(--color-neutral-900)',
+      qzHint: Q.sel ? 'You said ' + Q.sel : Q.dx > 40 ? 'Fact' : Q.dx < -40 ? 'Fear' : '',
+      qzHintInk: (Q.sel || (Q.dx > 0 ? 'fact' : 'fear')) === 'fact' ? 'var(--color-accent-700)' : '#8a3628',
+      qzRevealOn: !!Q.sel, qzButtonsOn: !Q.sel, qzVerdict: (qz.a === 'fact' ? 'Fact.' : 'Fear, not fact.') + (correct ? ' You got it.' : ''),
+      qzNextLabel: Q.i + 1 >= QUIZ.length ? 'See what you know' : 'Next card',
+      qzFear: () => answer('fear'), qzFact: () => answer('fact'),
+      qzNext: () => { if (Q.i + 1 >= QUIZ.length) { const quiz = { ...p.quiz }; if (quiz.pre == null) quiz.pre = Q.score; else quiz.post = Q.score; this.save({ quiz }); set({ qz: { ...Q, done: true } }); this.stamp('quiz'); } else set({ qz: { i: Q.i + 1, sel: null, score: Q.score, done: false, dx: 0, drag: false } }); },
+      qzDown: e => { if (Q.sel) return; e.currentTarget.setPointerCapture(e.pointerId); this.x0 = e.clientX; set({ qz: { ...Q, drag: true } }); },
+      qzMove: e => { if (!Q.drag) return; set({ qz: { ...Q, dx: e.clientX - this.x0 } }); },
+      qzUp: () => { if (!Q.drag) return; if (Math.abs(Q.dx) > 80) answer(Q.dx > 0 ? 'fact' : 'fear'); else set({ qz: { ...Q, dx: 0, drag: false } }); },
+      qzScore: Q.score, qzTotal: QUIZ.length, qzRoundLabel: p.quiz.post != null ? 'After the townhall' : 'Your first round',
+      quizRows: [{ k: 'First round', v: p.quiz.pre ?? '—' }, { k: 'After the townhall', v: p.quiz.post ?? 'Play again after the session' }],
+      qzRestart: () => set({ qz: { i: 0, sel: null, score: 0, done: false, dx: 0, drag: false } }),
+
+      sgPlaying: !G.done, sgDone: G.done, sg, sgOpts, sgProgress: `${G.i + 1} of ${SIGNALS.length}`,
+      sgRevealOn: G.sel != null, sgReveal: G.sel === sg.a ? 'Yes. Seniors describe this as one of the first signs they missed.' : `Seniors describe this as an early sign: ${sg.opts[sg.a].toLowerCase()}.`,
+      sgNextLabel: G.i + 1 >= SIGNALS.length ? 'Finish' : 'Next colleague',
+      sgNext: () => { if (G.i + 1 >= SIGNALS.length) { set({ sg: { ...G, done: true } }); this.stamp('signal'); } else set({ sg: { i: G.i + 1, sel: null, done: false } }); },
+
+      hbNum: s.hb + 1, hbStep: HB[s.hb], hbBar: HB.map((_, i) => ({ bg: i <= s.hb ? 'var(--color-accent)' : 'var(--color-neutral-200)' })),
+      hbBack: () => set({ hb: Math.max(0, s.hb - 1) }), hbNextLabel: s.hb === 3 ? 'Start over' : s.hb === 2 ? 'Confirm booking' : 'Next',
+      hbNext: () => { if (s.hb === 3) set({ hb: 0 }); else { set({ hb: s.hb + 1 }); if (s.hb === 2) this.stamp('help'); } },
+      protectHour: () => { const d = new Date(); d.setDate(d.getDate() + 1); while (d.getDay() === 0 || d.getDay() === 6) d.setDate(d.getDate() + 1); d.setHours(13, 0, 0, 0); ics('Personal appointment', d, 60); this.say('“Personal appointment” calendar file downloaded'); },
+      schemes: [
+        { t: 'SAL–Singlife scheme', d: 'Three free counselling and three coaching sessions a year, an app and a 24-hour helpline. SAL doesn’t know who uses it.' },
+        { t: 'LawCare', d: 'Up to three counselling sessions, cost split 50/50. The Law Society gets non-identifying data only.' },
+        { t: 'Mentorship Scheme', d: 'Confidential, cross-firm support from a senior practitioner.' },
+        { t: 'Fireside Dialogues', d: 'Seniors talking about sustaining practice. Dates are on the Notice Board.' }
+      ],
+
+      evFilters: ['All', 'Criminal', 'PIPD', 'Corporate', 'Small firms'].map(t => ({ t, ...this.sel(s.evFilter === t), go: () => set({ evFilter: t }) })),
+      events: EVENTS.filter(e => s.evFilter === 'All' || e.area === s.evFilter || e.area === 'All').map(e => ({ ...e, add: () => { ics(e.t, new Date(e.d), 90); this.say('Calendar file downloaded'); } })),
+
+      sDraft: s.sDraft, setSDraft: e => set({ sDraft: e.target.value }),
+      sendS: () => { const t = s.sDraft.trim(); if (!t) return; set({ sDraft: '', sugg: [{ id: Date.now(), t, v: 1, voted: true, reply: 'Awaiting a reply from SAL and the YLC.' }, ...s.sugg] }); },
+      suggestions: s.sugg.map(x => ({ ...x, br: x.voted ? 'var(--color-accent)' : 'var(--color-divider)', vote: () => set({ sugg: s.sugg.map(y => y.id === x.id ? { ...y, voted: !y.voted, v: y.v + (y.voted ? -1 : 1) } : y) }) })),
+
+      pulseQs, pulseIncomplete: PULSE_Q.some(q => !pd[q.k]),
+      saveLabel: p.onboarded ? 'Save' : 'Save and enter the village', skipLabel: p.onboarded ? 'Cancel' : 'Skip for now',
+      savePulse: () => { this.save({ pulse: { ...p.pulse, [s.pulseMode]: pd } }); if (!p.onboarded) finishOb(); else { set({ room: null }); this.say('Pulse saved on this device'); } },
+      skipPulse: () => { if (!p.onboarded) finishOb(); else set({ room: null }); },
+      obNext: () => set({ room: 'pulse', pulseMode: 'pre', pd: {} }),
+      pqeOpts: ['0–2 yrs', '3–5 yrs', '5+ yrs'].map(v => opt('pqe', v)), firmOpts: ['1–5 lawyers', '6–30', '30+'].map(v => opt('firm', v)),
+
+      sheetOn: s.sheet, openSheet: () => set({ sheet: true }), closeSheet: () => set({ sheet: false }),
+      lines: [
+        { t: 'Singlife 24-hour helpline', s: 'For SAL members', n: 'Call', href: 'tel:' },
+        { t: 'Samaritans of Singapore', s: '24 hours', n: '1767', href: 'tel:1767' },
+        { t: 'IMH Mental Health Helpline', s: '24 hours', n: '6389 2222', href: 'tel:63892222' }
+      ],
+      toastOn: !!s.toast, toast: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
